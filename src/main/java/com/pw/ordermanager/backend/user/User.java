@@ -20,8 +20,11 @@ public class User {
 
     private String password;
 
-    public User(String userName, String password){
+    private UserType type;
+
+    public User(String userName, String password, UserType type){
         this.userName = userName;
         this.password = password;
+        this.type = type;
     }
 }

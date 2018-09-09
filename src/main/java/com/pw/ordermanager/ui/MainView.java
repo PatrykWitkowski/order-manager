@@ -2,6 +2,8 @@ package com.pw.ordermanager.ui;
 
 import com.pw.ordermanager.backend.user.User;
 import com.pw.ordermanager.backend.user.UserRepository;
+import com.pw.ordermanager.backend.user.UserService;
+import com.pw.ordermanager.backend.user.UserType;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -20,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class MainView extends VerticalLayout {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     public MainView() {
         TextField username = new TextField();
@@ -63,14 +65,13 @@ public class MainView extends VerticalLayout {
     }
 
     private void login(TextField username, PasswordField password) {
-        final User byUserName = userRepository.findByUserName(username.getValue());
-        if(byUserName == null) {
-            return;
-        }
-        if(StringUtils.equals(byUserName.getPassword(), password.getValue())){
-            Notification.show("Password correct!");
-        } else {
-            Notification.show("Password wrong. :(");
+        final User authenticatedUser = userService.authenticate(username.getValue(), password.getValue());
+        if(authenticatedUser.getType() == UserType.ADMIN || authenticatedUser.getType() == UserType.SIMPLE){
+            Notification.show("Password correct! :)");
+        } else if (authenticatedUser.getType() == UserType.NOT_AUTH){
+            Notification.show("Password wrong! :(");
+        } else if(authenticatedUser.getType() == UserType.NONE){
+            Notification.show("User not found! :(");
         }
     }
 
