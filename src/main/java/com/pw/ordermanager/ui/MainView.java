@@ -1,9 +1,6 @@
 package com.pw.ordermanager.ui;
 
-import com.pw.ordermanager.backend.user.User;
-import com.pw.ordermanager.backend.user.UserRepository;
-import com.pw.ordermanager.backend.user.UserService;
-import com.pw.ordermanager.backend.user.UserType;
+import com.pw.ordermanager.backend.user.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -65,12 +62,14 @@ public class MainView extends VerticalLayout {
     }
 
     private void login(TextField username, PasswordField password) {
-        final User authenticatedUser = userService.authenticate(username.getValue(), password.getValue());
-        if(authenticatedUser.getType() == UserType.ADMIN || authenticatedUser.getType() == UserType.SIMPLE){
-            Notification.show("Password correct! :)");
-        } else if (authenticatedUser.getType() == UserType.NOT_AUTH){
-            Notification.show("Password wrong! :(");
-        } else if(authenticatedUser.getType() == UserType.NONE){
+        final UserDts authenticatedUser = userService.authenticate(username.getValue(), password.getValue());
+        if(authenticatedUser.getUser() != null){
+            if(authenticatedUser.isAuthorized()){
+                Notification.show("Password correct! :)");
+            } else{
+                Notification.show("Password wrong! :(");
+            }
+        } else{
             Notification.show("User not found! :(");
         }
     }

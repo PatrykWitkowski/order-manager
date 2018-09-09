@@ -14,21 +14,19 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public User authenticate(String userName, String password) {
+    public UserDts authenticate(String userName, String password) {
         final User user = userRepository.findByUserName(userName);
+        UserDts userDts = new UserDts();
+        userDts.setUser(user);
+
         if(Optional.ofNullable(user).isPresent()){
             if(BCrypt.checkpw(password, user.getPassword())){
-                return user;
+                userDts.setAuthorized(true);
             } else {
-                User notAuth = new User();
-                notAuth.setType(UserType.NOT_AUTH);
-                return notAuth;
+                userDts.setAuthorized(false);
             }
-        } else {
-            User notFoundUser = new User();
-            notFoundUser.setType(UserType.NONE);
-            return notFoundUser;
         }
+        return userDts;
     }
 
 }
