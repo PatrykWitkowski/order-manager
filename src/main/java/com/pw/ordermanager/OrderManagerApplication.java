@@ -17,17 +17,14 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 @SpringBootApplication
 public class OrderManagerApplication {
 
-    private static final Logger log = LoggerFactory.getLogger(OrderManagerApplication.class);
-
     public static void main(String[] args) {
         SpringApplication.run(OrderManagerApplication.class, args);
     }
 
     @Bean
     public CommandLineRunner loadData(UserRepository repository) {
-        return (args) -> {
+        return args ->
             // temp
             repository.save(new User("admin", BCrypt.hashpw("admin", BCrypt.gensalt()), UserType.ADMIN));
-        };
     }
 }

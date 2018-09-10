@@ -115,6 +115,37 @@
 
     <profiles>
         <profile>
+            <!-- we have to use this profile to analyse code with sonar until https://jira.codehaus.org/browse/MSONAR-70 is fixed ! -->
+            <id>sonar</id>
+            <properties>
+                <src.dir>target/generated-sources/delombok</src.dir>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>delombok</goal>
+                                </goals>
+                                <configuration>
+                                    <addOutputDirectory>true</addOutputDirectory>
+                                    <sourceDirectory>src/main/java</sourceDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>sonar-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>productionMode</id>
             <activation>
                 <property>
