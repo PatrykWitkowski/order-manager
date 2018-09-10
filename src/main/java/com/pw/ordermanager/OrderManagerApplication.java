@@ -3,8 +3,6 @@ package com.pw.ordermanager;
 import com.pw.ordermanager.backend.user.User;
 import com.pw.ordermanager.backend.user.UserRepository;
 import com.pw.ordermanager.backend.user.UserType;
-import com.vaadin.external.org.slf4j.Logger;
-import com.vaadin.external.org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
