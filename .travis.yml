@@ -1,5 +1,23 @@
+dist: trusty
+sudo: required
+
+addons:
+  sonarcloud:
+    organization: "patrykwitkowski-github"
+    token:
+      secure: "RtrrceBcfEGpB90XlKXJu+sKtYg1by0S8A2pI1xC+9i4+LdZq6d0a9etbPa3gGPXejWc8tYbN5/sVS/xucPC/qJarht+o1YV9OWRia3b03aTM140pR/TqxRC8wmo8Cbk4/E/KtrSlZvjpHmxc2swmdeRphUXaWhRgLV+GEozgrWE06YWaiwpUstryubCGBYoBH9Y8Mcybk6cF+t0Gp3CeC2IS5OlUyKniUyheKPFBg/0WVBtTr3y3fLx65AAGdkhtLmLRlHZ/1O5azddJ21hCHOknyhbhA4D8lcvcEVUBZ3BsOoO3marmTaTX2pfQf2WlWBaeqmqgl9TSAVVJQQz+BoFxBchbrYv2i7p+QI++JlXCnH/gtNh14nbkYWWDYmnVOe89KxwZqwJ3WtJIE/4mXe8vaXHubv53lZu9Q5mOxPf+8JPlyEVaGkxWfgCYzkZWcOPGE14lzSB1kawmU22VmWP30f2l3+bfRjUm3+Ux+Xs4lQ3TGd6RpzJC+xj3gj7xyqO4AAaNXKJO0po+ieIvfOrasIojdbwYNiNC2FztxRqsIHD5V6AdatPipcJecBHonXRR5GIytQfe/LEljWqxqMxm+tEd641C5UpAe6ze2iOPaej04EX75D7HWoEvYwr+694OlKFOdX9g6JNGFGnr6NrkMu2Lnb+EKK4PHQNRZE="
+
 language: java
+
 jdk:
 - oraclejdk8
+
+script:
+- sonar-scanner
+
+cache:
+  directories:
+  - '$HOME/.sonar/cache'
+
 after_success:
 - bash <(curl -s https://codecov.io/bash)
