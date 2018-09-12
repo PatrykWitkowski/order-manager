@@ -1,20 +1,22 @@
 dist: trusty
 sudo: required
-
 addons:
   sonarcloud:
-    organization: "patrykwitkowski-github"
+    organization: patrykwitkowski-github
     token:
-      secure: "RtrrceBcfEGpB90XlKXJu+sKtYg1by0S8A2pI1xC+9i4+LdZq6d0a9etbPa3gGPXejWc8tYbN5/sVS/xucPC/qJarht+o1YV9OWRia3b03aTM140pR/TqxRC8wmo8Cbk4/E/KtrSlZvjpHmxc2swmdeRphUXaWhRgLV+GEozgrWE06YWaiwpUstryubCGBYoBH9Y8Mcybk6cF+t0Gp3CeC2IS5OlUyKniUyheKPFBg/0WVBtTr3y3fLx65AAGdkhtLmLRlHZ/1O5azddJ21hCHOknyhbhA4D8lcvcEVUBZ3BsOoO3marmTaTX2pfQf2WlWBaeqmqgl9TSAVVJQQz+BoFxBchbrYv2i7p+QI++JlXCnH/gtNh14nbkYWWDYmnVOe89KxwZqwJ3WtJIE/4mXe8vaXHubv53lZu9Q5mOxPf+8JPlyEVaGkxWfgCYzkZWcOPGE14lzSB1kawmU22VmWP30f2l3+bfRjUm3+Ux+Xs4lQ3TGd6RpzJC+xj3gj7xyqO4AAaNXKJO0po+ieIvfOrasIojdbwYNiNC2FztxRqsIHD5V6AdatPipcJecBHonXRR5GIytQfe/LEljWqxqMxm+tEd641C5UpAe6ze2iOPaej04EX75D7HWoEvYwr+694OlKFOdX9g6JNGFGnr6NrkMu2Lnb+EKK4PHQNRZE="
-
+      secure: RtrrceBcfEGpB90XlKXJu+sKtYg1by0S8A2pI1xC+9i4+LdZq6d0a9etbPa3gGPXejWc8tYbN5/sVS/xucPC/qJarht+o1YV9OWRia3b03aTM140pR/TqxRC8wmo8Cbk4/E/KtrSlZvjpHmxc2swmdeRphUXaWhRgLV+GEozgrWE06YWaiwpUstryubCGBYoBH9Y8Mcybk6cF+t0Gp3CeC2IS5OlUyKniUyheKPFBg/0WVBtTr3y3fLx65AAGdkhtLmLRlHZ/1O5azddJ21hCHOknyhbhA4D8lcvcEVUBZ3BsOoO3marmTaTX2pfQf2WlWBaeqmqgl9TSAVVJQQz+BoFxBchbrYv2i7p+QI++JlXCnH/gtNh14nbkYWWDYmnVOe89KxwZqwJ3WtJIE/4mXe8vaXHubv53lZu9Q5mOxPf+8JPlyEVaGkxWfgCYzkZWcOPGE14lzSB1kawmU22VmWP30f2l3+bfRjUm3+Ux+Xs4lQ3TGd6RpzJC+xj3gj7xyqO4AAaNXKJO0po+ieIvfOrasIojdbwYNiNC2FztxRqsIHD5V6AdatPipcJecBHonXRR5GIytQfe/LEljWqxqMxm+tEd641C5UpAe6ze2iOPaej04EX75D7HWoEvYwr+694OlKFOdX9g6JNGFGnr6NrkMu2Lnb+EKK4PHQNRZE=
 language: java
-
 jdk:
 - oraclejdk8
-
 script:
 - sonar-scanner
-
 cache:
   directories:
-  - '$HOME/.sonar/cache'
+  - "$HOME/.sonar/cache"
+deploy:
+  provider: heroku
+  api_key:
+    secure: oK8cXyAS4njJtre0iZZ6kE0be3Hx7W82gJFynwvqSnaMzxngYbrQmG2kz8PAXPN1bbJ9gy4WRdy1wb5eYsNWSuqETgDicGFy4KeT+H1cjDwBf/0QWzwHlKxsXdOPpsOiPAStWysQpSzDsY2jivGWY3NL084NzqShpHn2Yh//DGRzfiYBarG1G/wjIYR/Bh3nEBpwwVIAwA321EL2Y/5Htz1o/wIVPYrZu2laX6MSKD6QHPOmtiZDJz5klTlL04DHhYdlVMJkBy5Sz+jihjEz+zN5ClTRFHZYMigqdiQPZTFFsP2FNdIvkf3QxxS0vDa93ag+gZKmB2s9DrYKE7hqz4Lw6saGhlz7UZnzmPIOhJ38LRq1Vt57zs9y98Di86Jiy0m7jH+D2AO+NE6fZi0wdzxZHsMbnWfCAkgNp6CIRv6tsR8KErPRrRTyp8N72tx6ZlDk56bBMfjH5tRo0OlMGPMk/zEadQoFjl0ImUyvj29AfQcI4GJ7NXMxmufu7SeA7Q6v6XrCh3JQaXBkJqJxaZnOnCQPpHXea8hwTiTDJwFC5Vtiw7r2kNpr2pXmegS0/JmYPe4vtAZ+97LpezIUEnd/9MyVF6TM/eSOaOjxqI3I3RgijAL5YZzM6flE+PkTFn8H/KB/msAMGvZzznreh3/kSf/pUOlZ/yn6ILtHJ7s=
+  app: order-manager
+  on:
+    repo: PatrykWitkowski/order-manager
