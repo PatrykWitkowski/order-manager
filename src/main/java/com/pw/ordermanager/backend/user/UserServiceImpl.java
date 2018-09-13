@@ -1,5 +1,6 @@
 package com.pw.ordermanager.backend.user;
 
+import com.pw.ordermanager.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -19,13 +20,10 @@ public class UserServiceImpl implements UserService {
         UserDts userDts = new UserDts();
         userDts.setUser(user);
 
-        if(Optional.ofNullable(user).isPresent()){
-            if(BCrypt.checkpw(password, user.getPassword())){
-                userDts.setAuthorized(true);
-            } else {
-                userDts.setAuthorized(false);
-            }
-        }
+        Optional.ofNullable(user).ifPresent(u -> userDts.setAuthorized(BCrypt.checkpw(password, u.getPassword())));
+
+        SecurityUtils.setCurrentUser(userDts);
+
         return userDts;
     }
 
