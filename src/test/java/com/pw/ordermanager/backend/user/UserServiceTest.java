@@ -53,5 +53,12 @@ public class UserServiceTest {
         assertThat(SecurityUtils.isAccessGranted(), is(false));
     }
 
+    @Test
+    public void shouldAuthenticateWhenCorrectPassword(){
+        final UserDts result = testedService.authenticate("admin", "correct");
 
+        assertThat(result.getUser(), is(admin));
+        assertThat(result.isAuthorized(), is(true));
+        assertThat(SecurityUtils.isAccessGranted(), is(true));
+    }
 }
