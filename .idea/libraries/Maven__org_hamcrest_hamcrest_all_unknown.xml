@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.hamcrest:hamcrest-all:unknown">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/hamcrest/hamcrest-all/unknown/hamcrest-all-unknown.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/hamcrest/hamcrest-all/unknown/hamcrest-all-unknown-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/hamcrest/hamcrest-all/unknown/hamcrest-all-unknown-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
