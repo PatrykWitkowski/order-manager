@@ -1,5 +1,6 @@
-package com.pw.ordermanager.backend.user;
+package com.pw.ordermanager.backend.jpa;
 
+import com.pw.ordermanager.backend.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.io.Serializable;

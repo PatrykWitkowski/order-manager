@@ -1,5 +1,6 @@
-package com.pw.ordermanager.backend.user;
+package com.pw.ordermanager.backend.entity;
 
+import com.pw.ordermanager.backend.common.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

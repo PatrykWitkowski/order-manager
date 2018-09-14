@@ -1,5 +1,6 @@
-package com.pw.ordermanager.backend.user;
+package com.pw.ordermanager.backend.Dts;
 
+import com.pw.ordermanager.backend.entity.User;
 import lombok.Data;
 
 @Data

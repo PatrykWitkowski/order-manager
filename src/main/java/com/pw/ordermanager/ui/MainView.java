@@ -1,6 +1,6 @@
 package com.pw.ordermanager.ui;
 
-import com.pw.ordermanager.security.SecurityUtils;
+import com.pw.ordermanager.backend.utils.security.SecurityUtils;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;

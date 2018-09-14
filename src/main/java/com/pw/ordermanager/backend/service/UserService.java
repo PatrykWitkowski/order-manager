@@ -1,5 +1,6 @@
-package com.pw.ordermanager.backend.user;
+package com.pw.ordermanager.backend.service;
 
+import com.pw.ordermanager.backend.Dts.UserDts;
 import lombok.NonNull;
 
 import java.io.Serializable;
