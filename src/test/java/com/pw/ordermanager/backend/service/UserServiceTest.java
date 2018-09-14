@@ -1,6 +1,6 @@
 package com.pw.ordermanager.backend.service;
 
-import com.pw.ordermanager.backend.Dts.UserDts;
+import com.pw.ordermanager.backend.dts.UserDts;
 import com.pw.ordermanager.backend.common.UserType;
 import com.pw.ordermanager.backend.entity.User;
 import com.pw.ordermanager.backend.jpa.UserRepository;

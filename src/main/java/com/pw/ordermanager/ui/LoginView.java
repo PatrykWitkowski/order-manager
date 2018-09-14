@@ -1,6 +1,6 @@
 package com.pw.ordermanager.ui;
 
-import com.pw.ordermanager.backend.Dts.UserDts;
+import com.pw.ordermanager.backend.dts.UserDts;
 import com.pw.ordermanager.backend.service.UserService;
 import com.pw.ordermanager.backend.utils.security.SecurityUtils;
 import com.vaadin.flow.component.button.Button;
