@@ -8,9 +8,7 @@ public class SecurityUtils {
 
     private static UserDts currentUser;
 
-    private SecurityUtils() {
-        throw new IllegalStateException("Utility class");
-    }
+    private SecurityUtils() { }
 
     public static boolean isAccessGranted(){
         return Optional.ofNullable(currentUser).map(UserDts::isAuthorized).orElse(false);
