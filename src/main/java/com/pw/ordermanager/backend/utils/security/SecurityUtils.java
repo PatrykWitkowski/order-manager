@@ -6,7 +6,11 @@ import java.util.Optional;
 
 public class SecurityUtils {
 
-    static private UserDts currentUser;
+    private static UserDts currentUser;
+
+    private SecurityUtils() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static boolean isAccessGranted(){
         return Optional.ofNullable(currentUser).map(UserDts::isAuthorized).orElse(false);
