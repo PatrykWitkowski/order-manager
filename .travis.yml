@@ -23,5 +23,4 @@ deploy:
     master: order-manager-master
     production: order-manager-production
   on:
-    branch: master, production
     repo: PatrykWitkowski/order-manager
