@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -30,6 +31,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(length = 8)
     private UserType type;
+
+    //@OneToMany(mappedBy="owner")
+    //private List<Order> orders;
 
     public User(String userName, String password, UserType type){
         this.userName = userName;
