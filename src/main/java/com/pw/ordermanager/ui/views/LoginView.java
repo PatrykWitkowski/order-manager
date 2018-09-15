@@ -1,8 +1,9 @@
-package com.pw.ordermanager.ui;
+package com.pw.ordermanager.ui.views;
 
 import com.pw.ordermanager.backend.dts.UserDts;
 import com.pw.ordermanager.backend.service.UserService;
 import com.pw.ordermanager.backend.utils.security.SecurityUtils;
+import com.pw.ordermanager.ui.views.orderslist.OrdersList;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -18,7 +19,6 @@ import com.vaadin.flow.theme.lumo.Lumo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Route("login")
-@Theme(value = Lumo.class, variant = Lumo.DARK)
 public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
     @Autowired
@@ -68,7 +68,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         if(authenticatedUser.getUser() != null){
             if(authenticatedUser.isAuthorized()){
                 Notification.show("Password correct! :)");
-                getUI().ifPresent(ui -> ui.navigate(MainView.class));
+                getUI().ifPresent(ui -> ui.navigate(OrdersList.class));
             } else{
                 Notification.show("Password wrong! :(");
             }
@@ -80,7 +80,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
         if(SecurityUtils.isAccessGranted()){
-            beforeEnterEvent.rerouteTo(MainView.class);
+            beforeEnterEvent.rerouteTo(OrdersList.class);
         }
     }
 }
