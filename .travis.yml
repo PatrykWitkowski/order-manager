@@ -19,6 +19,8 @@ deploy:
   provider: heroku
   api_key:
     secure: qG10BfpIvPrjF5EW8ffgJYrYTrsGjJgcbQH6BzWaQKojNqkBTRY6+OSOqScIKU3gWb85CIIYvDU+HtXpi8KjiCAU7WSovqow5EKqQlJOqcLRtjucd9db7EwZrPraTT/RKJGDMkP9yGfxTwdDmHLN9JeHdLkYL1GxuuRcUvH0QLw3oMFJK2e8Q6/a2Ka6wMkhESMJYUKKCypDTNA0TKvlilAxa0EKYRoB+Inoo9q6pGM+oOSExsraxeejolZXHC9ETJuBeqnI6hTl+2lvK79YYuqjiJ93pfjBFHuB9P0BKSLXR7xWAJzOLrIoKSEP3AEPhBS7bdNXuSqh10ENtpW1i00VdrT+42Nv8awydQA5iDNkrPMxhqCzIgHdBwQB1SV50YBi2a56ombOiGZ+My5uXJQCZar7joYZAvz/jwkBlb0/WAmN8vecs6MljdyUMUxauUKAl2x/F6Lm/BJnnFv95J2ndx6GYisPsTE6maIlnRDI0i1DvJdcrR2Xsxc6vXbLJ53qlkm9dqxK++CPyE5xpijLnp9tWHDUXRWYAuho/Rtqe2CnvhaxWNgoWXEsWTLZJu6HhsjTY6qg7luO+4z0oHBwbE+SCvnr1rrY3JC1P/LeJ9rNfDfki2Rh8BWENV1nbp6d9ZQYLety5fAXo9yX1exK4vXAT0qLI88SrP6HFPs=
-  app: order-manager-master
+  app:
+    master: order-manager-master
+    production: order-manager-production
   on:
     repo: PatrykWitkowski/order-manager
