@@ -39,10 +39,10 @@ public class UserServiceTest {
 
     @Before
     public void init(){
-        when(userRepositoryMock.findByUserName(UNKNOW_USERNAME)).thenReturn(null);
+        when(userRepositoryMock.findByUsername(UNKNOW_USERNAME)).thenReturn(null);
         final String correctPass = BCrypt.hashpw(CORRECT_PASSWORD, BCrypt.gensalt());
         admin = User.builder().username(ADMIN_USERNAME).password(correctPass).type(UserType.ADMIN).build();
-        when(userRepositoryMock.findByUserName(ADMIN_USERNAME)).thenReturn(admin);
+        when(userRepositoryMock.findByUsername(ADMIN_USERNAME)).thenReturn(admin);
     }
 
     @Test
