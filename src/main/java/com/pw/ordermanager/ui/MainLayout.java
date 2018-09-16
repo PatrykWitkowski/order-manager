@@ -12,8 +12,7 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.router.*;
-import com.vaadin.flow.server.InitialPageSettings;
-import com.vaadin.flow.server.PageConfigurator;
+import com.vaadin.flow.server.*;
 
 /**
  * The main layout contains the header with the navigation buttons, and the
@@ -47,10 +46,17 @@ public class MainLayout extends Div
         add(header);
 
         addClassName("main-layout");
+
+        finishSession();
+    }
+
+    private void finishSession() {
+        VaadinService.getCurrent().addSessionDestroyListener((SessionDestroyEvent sessionDestroyEvent) -> {
+            SecurityUtils.revokeAccess(sessionDestroyEvent.getSession().getCsrfToken());
+        });
     }
 
     private void onLogout() {
-        SecurityUtils.revokeAccess(getUI().get().getSession().getCsrfToken());
         getUI().get().getSession().close();
         getUI().get().getPage().reload();
     }
