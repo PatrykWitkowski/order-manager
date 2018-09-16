@@ -1,7 +1,7 @@
 package com.pw.ordermanager.backend.service;
 
-import com.pw.ordermanager.backend.dts.UserDts;
 import com.pw.ordermanager.backend.common.UserType;
+import com.pw.ordermanager.backend.dts.UserDts;
 import com.pw.ordermanager.backend.entity.User;
 import com.pw.ordermanager.backend.jpa.UserRepository;
 import com.pw.ordermanager.backend.utils.security.SecurityUtils;
@@ -23,6 +23,12 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 public class UserServiceTest {
 
+    public static final String UNKNOW_USERNAME = "unknow";
+    public static final String CORRECT_PASSWORD = "correct";
+    public static final String ADMIN_USERNAME = "admin";
+    public static final String WRONG_PASSWORD = "wrong";
+    public static final String TOKEN = "12ds-fsdf-4fds-ge9s";
+
     @Autowired
     private UserService testedService;
 
@@ -33,36 +39,36 @@ public class UserServiceTest {
 
     @Before
     public void init(){
-        when(userRepositoryMock.findByUserName("unknow")).thenReturn(null);
-        final String correctPass = BCrypt.hashpw("correct", BCrypt.gensalt());
-        admin = User.builder().userName("admin").password(correctPass).type(UserType.ADMIN).build();
-        when(userRepositoryMock.findByUserName("admin")).thenReturn(admin);
+        when(userRepositoryMock.findByUserName(UNKNOW_USERNAME)).thenReturn(null);
+        final String correctPass = BCrypt.hashpw(CORRECT_PASSWORD, BCrypt.gensalt());
+        admin = User.builder().userName(ADMIN_USERNAME).password(correctPass).type(UserType.ADMIN).build();
+        when(userRepositoryMock.findByUserName(ADMIN_USERNAME)).thenReturn(admin);
     }
 
     @Test
     public void shouldNotAuthenticateWhenNoFoundUser(){
-        final UserDts result = testedService.authenticate("unknow", "unknow");
+        final UserDts result = testedService.authenticate(UNKNOW_USERNAME, UNKNOW_USERNAME, TOKEN);
 
         assertThat(result.getUser(), is(nullValue()));
         assertThat(result.isAuthorized(), is(false));
-        assertThat(SecurityUtils.isAccessGranted(), is(false));
+        assertThat(SecurityUtils.isAccessGranted(TOKEN), is(false));
     }
 
     @Test
     public void shouldNotAuthenticateWhenBadPassword(){
-        final UserDts result = testedService.authenticate("admin", "wrong");
+        final UserDts result = testedService.authenticate(ADMIN_USERNAME, WRONG_PASSWORD, TOKEN);
 
         assertThat(result.getUser(), is(admin));
         assertThat(result.isAuthorized(), is(false));
-        assertThat(SecurityUtils.isAccessGranted(), is(false));
+        assertThat(SecurityUtils.isAccessGranted(TOKEN), is(false));
     }
 
     @Test
     public void shouldAuthenticateWhenCorrectPassword(){
-        final UserDts result = testedService.authenticate("admin", "correct");
+        final UserDts result = testedService.authenticate(ADMIN_USERNAME, CORRECT_PASSWORD, TOKEN);
 
         assertThat(result.getUser(), is(admin));
         assertThat(result.isAuthorized(), is(true));
-        assertThat(SecurityUtils.isAccessGranted(), is(true));
+        assertThat(SecurityUtils.isAccessGranted(TOKEN), is(true));
     }
 }
