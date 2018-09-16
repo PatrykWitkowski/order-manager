@@ -64,22 +64,24 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
     }
 
     private void onLogin(TextField username, PasswordField password) {
-        final UserDts authenticatedUser = userService.authenticate(username.getValue(), password.getValue());
+        final UserDts authenticatedUser
+                = userService.authenticate(username.getValue(), password.getValue(),
+                getUI().get().getSession().getCsrfToken());
         if(authenticatedUser.getUser() != null){
             if(authenticatedUser.isAuthorized()){
-                Notification.show("Password correct! :)");
+                Notification.show("Password correct!");
                 getUI().ifPresent(ui -> ui.navigate(OrdersList.class));
             } else{
-                Notification.show("Password wrong! :(");
+                Notification.show("Password wrong!");
             }
         } else{
-            Notification.show("User not found! :(");
+            Notification.show("User not found!");
         }
     }
 
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
-        if(SecurityUtils.isAccessGranted()){
+        if(SecurityUtils.isAccessGranted(beforeEnterEvent.getUI().getSession().getCsrfToken())){
             beforeEnterEvent.rerouteTo(OrdersList.class);
         }
     }

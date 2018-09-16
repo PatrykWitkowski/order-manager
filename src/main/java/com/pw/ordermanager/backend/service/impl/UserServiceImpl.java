@@ -19,14 +19,13 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public UserDts authenticate(String userName, String password) {
+    public UserDts authenticate(String userName, String password, String sessionToken) {
         final User user = userRepository.findByUserName(userName);
         UserDts userDts = new UserDts();
         userDts.setUser(user);
 
         Optional.ofNullable(user).ifPresent(u -> userDts.setAuthorized(BCrypt.checkpw(password, u.getPassword())));
-
-        SecurityUtils.setCurrentUser(userDts);
+        SecurityUtils.addAuthenticatedUser(sessionToken, userDts);
 
         return userDts;
     }

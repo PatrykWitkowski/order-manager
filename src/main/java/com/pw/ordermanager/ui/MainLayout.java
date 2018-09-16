@@ -1,8 +1,8 @@
 package com.pw.ordermanager.ui;
 
 import com.pw.ordermanager.backend.utils.security.SecurityUtils;
-import com.pw.ordermanager.ui.views.LoginView;
 import com.pw.ordermanager.ui.components.ClickableRouterLink;
+import com.pw.ordermanager.ui.views.LoginView;
 import com.pw.ordermanager.ui.views.orderslist.OrdersList;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.dependency.HtmlImport;
@@ -37,10 +37,7 @@ public class MainLayout extends Div
         ClickableRouterLink logout = new ClickableRouterLink(null, LoginView.class);
         logout.add(new Icon(VaadinIcon.POWER_OFF), new Text("Logout"));
         logout.addClassName("main-layout__nav-item");
-        logout.addClickListener(e -> {
-           SecurityUtils.revokeAccess();
-        });
-
+        logout.addClickListener(e -> onLogout());
 
         Div navigation = new Div(orders, logout);
         navigation.addClassName("main-layout__nav");
@@ -52,6 +49,12 @@ public class MainLayout extends Div
         addClassName("main-layout");
     }
 
+    private void onLogout() {
+        SecurityUtils.revokeAccess(getUI().get().getSession().getCsrfToken());
+        getUI().get().getSession().close();
+        getUI().get().getPage().reload();
+    }
+
     @Override
     public void configurePage(InitialPageSettings settings) {
         settings.addMetaTag("apple-mobile-web-app-capable", "yes");
@@ -60,7 +63,7 @@ public class MainLayout extends Div
 
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
-        if(!SecurityUtils.isAccessGranted()){
+        if(!SecurityUtils.isAccessGranted(beforeEnterEvent.getUI().getSession().getCsrfToken())){
             beforeEnterEvent.rerouteTo(LoginView.class);
         }
     }
