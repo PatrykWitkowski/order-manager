@@ -22,7 +22,7 @@ public class SecurityUtilsTest {
     @Before
     public void init(){
         user = new UserDts();
-        user.setUser(User.builder().userName(ADMIN_USERNAME).build());
+        user.setUser(User.builder().username(ADMIN_USERNAME).build());
         user.setAuthorized(true);
         SecurityUtils.addAuthenticatedUser(TOKEN, user);
     }
@@ -47,7 +47,7 @@ public class SecurityUtilsTest {
     @Test
     public void shouldNoGainAccessWhenUserNotAuthorized(){
         UserDts notAuthorizedUser = new UserDts();
-        notAuthorizedUser.setUser(User.builder().userName(USER_NAME).build());
+        notAuthorizedUser.setUser(User.builder().username(USER_NAME).build());
         notAuthorizedUser.setAuthorized(false);
         String otherSessionToken = "5345-df66-fd34-6gfd";
         SecurityUtils.addAuthenticatedUser(otherSessionToken, notAuthorizedUser);

@@ -22,7 +22,8 @@ public class User {
     private Long id;
 
     @NotBlank
-    private String userName;
+    @Column(unique = true)
+    private String username;
 
     @NotBlank
     private String password;
@@ -34,8 +35,8 @@ public class User {
     //@OneToMany(mappedBy="owner")
     //private List<Order> orders;
 
-    public User(String userName, String password, UserType type){
-        this.userName = userName;
+    public User(String username, String password, UserType type){
+        this.username = username;
         this.password = password;
         this.type = type;
     }
