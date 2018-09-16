@@ -20,7 +20,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDts authenticate(String userName, String password, String sessionToken) {
-        final User user = userRepository.findByUserName(userName);
+        final User user = userRepository.findByUsername(userName);
         UserDts userDts = new UserDts();
         userDts.setUser(user);
 
