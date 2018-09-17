@@ -13,6 +13,8 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.*;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 /**
  * The main layout contains the header with the navigation buttons, and the

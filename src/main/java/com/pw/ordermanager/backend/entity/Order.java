@@ -1,14 +1,12 @@
 package com.pw.ordermanager.backend.entity;
 
 import com.pw.ordermanager.backend.common.OrderStatus;
+import lombok.Data;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
-
+@Data
 public class Order implements Serializable {
 
     //@Id
@@ -18,7 +16,7 @@ public class Order implements Serializable {
     //@NotNull
     //@ManyToOne(fetch=FetchType.LAZY)
     //@JoinColumn(name="OWNER_ID")
-    private User owner;
+    //private User owner;
 
     private String title;
 
@@ -28,7 +26,7 @@ public class Order implements Serializable {
 
     //@NotNull
     //@OneToOne
-    private Item item;
+    //private Item item;
 
     //@NotNull
     private Long amount;
@@ -40,8 +38,12 @@ public class Order implements Serializable {
      * delivered - date of delivery
      * cancelled - date of cancellation
      */
-    private LocalDateTime dateTime;
+    private LocalDate date;
 
     private String description;
+
+    private double totalPrice;
+
+    private Long counter;
 
 }
