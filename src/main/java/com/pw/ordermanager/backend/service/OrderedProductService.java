@@ -6,10 +6,11 @@ import java.util.List;
 
 public interface OrderedProductService {
 
-    List<OrderedProduct> findOrderedProduct();
+    List<OrderedProduct> findOrderedProducts();
 
     void save(OrderedProduct orderedProduct);
 
     void delete(OrderedProduct orderedProduct);
 
+    boolean checkIfOrderedProductIsUnique(OrderedProduct orderedProduct);
 }

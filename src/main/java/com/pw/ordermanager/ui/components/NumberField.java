@@ -25,16 +25,18 @@ public class NumberField extends TextField implements ValueProvider {
                     .get(orderedProduct.getSeller()) * Long.parseLong(getValue());
             orderedProduct.setPrice(newPrice);
             orderedProduct.setAmount(Long.parseLong(getValue()));
-            selectedProducts.setItems(orderedProduct);
 
             ListDataProvider<OrderedProduct> dataProvider
                     = (ListDataProvider<OrderedProduct>)selectedProducts.getDataProvider();
+            selectedProducts.setItems(dataProvider.getItems());
+
             double totalPrice = dataProvider.getItems().stream()
                     .map(OrderedProduct::getPrice)
                     .mapToDouble(Double::doubleValue)
                     .sum();
+            String totalPriceText = String.format("%.2f", totalPrice);
             selectedProducts.getFooterRows().stream().findFirst().ifPresent(footerRow -> {
-                footerRow.getCell(selectedProducts.getColumnByKey("priceColumnKey")).setText("Total: " + totalPrice);
+                footerRow.getCell(selectedProducts.getColumnByKey("priceColumnKey")).setText("Total: " + totalPriceText);
             });
         });
 

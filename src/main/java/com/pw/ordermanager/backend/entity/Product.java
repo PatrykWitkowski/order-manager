@@ -23,6 +23,7 @@ public class Product {
     private String code;
 
     //@NotBlank
+    // max 13
     private String name;
 
     private String description;
@@ -30,4 +31,9 @@ public class Product {
     private Map<Seller, Double> prices;
 
     //private String productWebsiteUrl;
+
+    @Override
+    public String toString(){
+        return name;
+    }
 }

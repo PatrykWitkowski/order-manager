@@ -22,4 +22,9 @@ public class Seller {
     private String description;
 
     private String sellerWebsiteUrl;
+
+    @Override
+    public String toString(){
+        return name;
+    }
 }

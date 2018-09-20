@@ -2,9 +2,10 @@ package com.pw.ordermanager.ui.components;
 
 import com.pw.ordermanager.backend.entity.Product;
 import com.pw.ordermanager.backend.entity.Seller;
-import com.pw.ordermanager.backend.entity.properties.Product_;
-import com.pw.ordermanager.backend.entity.properties.Seller_;
 import com.pw.ordermanager.backend.service.ProductService;
+import com.pw.ordermanager.backend.service.SellerService;
+import com.pw.ordermanager.backend.service.impl.ProductServiceImpl;
+import com.pw.ordermanager.backend.service.impl.SellerServiceImpl;
 import com.pw.ordermanager.ui.common.AbstractSearchDialog;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasComponents;
@@ -16,20 +17,17 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import lombok.Getter;
-import org.atmosphere.config.service.Get;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 
 @Tag("product-search-box")
 public class ProductSearchBox extends Component implements HasComponents, HasSize {
 
-    @Autowired
     private ProductService productService;
+    private SellerService sellerService;
 
     @Getter
     private ComboBox<Product> productSearchField;
@@ -38,6 +36,10 @@ public class ProductSearchBox extends Component implements HasComponents, HasSiz
     private Button searchButton;
 
     public ProductSearchBox(AbstractSearchDialog dialog) {
+        //cannot autowired because it is in component which is created by new
+        productService = ProductServiceImpl.getInstance();
+        sellerService = SellerServiceImpl.getInstance();
+
         productSearchField = new ComboBox<>("Product");
         sellerSearchField = new ComboBox<>("Seller");
         searchButton = new Button(new Icon(VaadinIcon.SEARCH));
@@ -47,25 +49,25 @@ public class ProductSearchBox extends Component implements HasComponents, HasSiz
             dialog.open();
         });
 
+        productSearchField.addFocusListener(e -> {
+            if(sellerSearchField.getValue() != null){
+                productSearchField.setItems(productService.findProductsBySeller(sellerSearchField.getValue()));
+            } else {
+                productSearchField.setItems(productService.findAllProducts());
+            }
+        });
+
+        sellerSearchField.addFocusListener(e -> {
+            if(productSearchField.getValue() != null){
+                sellerSearchField.setItems(productSearchField.getValue().getPrices().keySet());
+            } else {
+                //sellerSearchField.setItems(sellerService.findAllSellers());
+            }
+        });
+
         HorizontalLayout upperSearchPanel = new HorizontalLayout(productSearchField, searchButton);
         upperSearchPanel.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.END);
         add(upperSearchPanel, sellerSearchField);
-    }
-
-    @PostConstruct
-    public void init(){
-        productSearchField.setItems(productService.findAllProducts());
-        productSearchField.addValueChangeListener(e -> {
-            if(e.getValue() != null){
-                sellerSearchField.setItems(e.getValue().getPrices().keySet());
-            }
-        });
-
-        sellerSearchField.addValueChangeListener(e -> {
-            if(e.getValue() != null){
-                productSearchField.setItems(productService.findProductsBySeller(e.getValue()));
-            }
-        });
     }
 
     public boolean isFilled(){
