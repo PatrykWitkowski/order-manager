@@ -12,6 +12,7 @@ import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -85,7 +86,11 @@ public class ProductManager extends Component implements HasComponents {
                     orderedProductService.save(newOrderedProduct);
                     selectedProducts.setItems(orderedProductService.findOrderedProducts());
                     calculateTotalPrice(prices);
+                } else {
+                    Notification.show("This product is already added.", 4000, Notification.Position.MIDDLE);
                 }
+            } else{
+                Notification.show("You need to fill a product and a seller fields.", 4000, Notification.Position.MIDDLE);
             }
         });
     }
