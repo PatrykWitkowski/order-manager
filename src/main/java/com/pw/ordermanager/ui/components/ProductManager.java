@@ -3,24 +3,25 @@ package com.pw.ordermanager.ui.components;
 import com.pw.ordermanager.backend.entity.OrderedProduct;
 import com.pw.ordermanager.backend.entity.Product;
 import com.pw.ordermanager.backend.entity.Seller;
-import com.pw.ordermanager.ui.views.dialogs.ItemSearchDialog;
+import com.pw.ordermanager.backend.service.OrderedProductService;
+import com.pw.ordermanager.ui.views.dialogs.ProductSearchDialog;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
-import com.vaadin.flow.data.renderer.NativeButtonRenderer;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Stream;
+import javax.annotation.PostConstruct;
 
 @Tag("product-manager")
 public class ProductManager extends Component implements HasComponents {
+
+    @Autowired
+    private OrderedProductService orderedProductService;
 
     private ProductSearchBox productLookup;
     private Grid<OrderedProduct> selectedProducts = new Grid<>();
@@ -28,22 +29,7 @@ public class ProductManager extends Component implements HasComponents {
     private Button deleteProduct = new Button("Delete");
 
     public ProductManager(){
-        productLookup = new ProductSearchBox(new ItemSearchDialog());
-
-        OrderedProduct order = new OrderedProduct();
-        Seller seller = new Seller();
-        seller.setName("seller #1");
-        Product product = new Product();
-        product.setCode("CODE#1");
-        product.setName("Product#1");
-        Map<Seller,Double> pricesP = new HashMap<>();
-        pricesP.put(seller, 100.);
-        product.setPrices(pricesP);
-        order.setSeller(seller);
-        order.setProduct(product);
-        order.setAmount(1L);
-        order.setPrice(100);
-        selectedProducts.setItems(order);
+        productLookup = new ProductSearchBox(new ProductSearchDialog());
 
         selectedProducts.addColumn(o -> o.getProduct().getCode()).setHeader("Code");
         selectedProducts.addColumn(o -> o.getProduct().getName()).setHeader("Product");
@@ -60,6 +46,15 @@ public class ProductManager extends Component implements HasComponents {
                 .sum();
         selectedProducts.appendFooterRow().getCell(prices).setText("Total: " + totalPrice);
 
+        deleteProduct.setEnabled(false);
+        selectedProducts.addSelectionListener(e -> {
+           if(e.getAllSelectedItems().isEmpty()){
+               deleteProduct.setEnabled(false);
+           } else{
+               deleteProduct.setEnabled(true);
+           }
+        });
+
         HorizontalLayout buttonBar = new HorizontalLayout(addProduct, deleteProduct);
         buttonBar.setClassName("buttons");
         buttonBar.setSpacing(true);
@@ -70,5 +65,27 @@ public class ProductManager extends Component implements HasComponents {
         HorizontalLayout productsLayout = new HorizontalLayout(leftSideBar, selectedProducts);
 
         add(productsLayout);
+    }
+
+    @PostConstruct
+    public void init(){
+        selectedProducts.setItems(orderedProductService.findOrderedProduct());
+        deleteProduct.addClickListener(e -> {
+            selectedProducts.getSelectedItems().stream().forEach(item -> orderedProductService.delete(item));
+            selectedProducts.getDataProvider().refreshAll();
+        });
+        addProduct.addClickListener(e -> {
+            if(productLookup.isFilled()){
+                OrderedProduct newOrderedProduct= new OrderedProduct();
+                final Product productValue = productLookup.getProductSearchField().getValue();
+                final Seller sellerValue = productLookup.getSellerSearchField().getValue();
+                newOrderedProduct.setProduct(productValue);
+                newOrderedProduct.setSeller(sellerValue);
+                newOrderedProduct.setAmount(1L);
+                newOrderedProduct.setPrice(productValue.getPrices().get(sellerValue));
+                orderedProductService.save(newOrderedProduct);
+                selectedProducts.setItems(orderedProductService.findOrderedProduct());
+            }
+        });
     }
 }
