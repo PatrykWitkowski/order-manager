@@ -2,8 +2,6 @@ package com.pw.ordermanager.backend.entity;
 
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 public class Seller {
 
@@ -13,10 +11,10 @@ public class Seller {
 
     //@Nullable
     //@OneToMany(mappedBy="seller")
-    private List<Item> itemsOfSeller;
+    //private List<Item> itemsOfSeller;
 
     //@NotBlank
-    private String code;
+    //private String code;
 
     //@NotBlank
     private String name;

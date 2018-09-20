@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 public class Order implements Serializable {
@@ -16,7 +17,7 @@ public class Order implements Serializable {
     //@NotNull
     //@ManyToOne(fetch=FetchType.LAZY)
     //@JoinColumn(name="OWNER_ID")
-    //private User owner;
+    private User owner;
 
     private String title;
 
@@ -26,7 +27,7 @@ public class Order implements Serializable {
 
     //@NotNull
     //@OneToOne
-    //private Item item;
+    private List<OrderedProduct> orderedProduct;
 
     //@NotNull
     private Long amount;

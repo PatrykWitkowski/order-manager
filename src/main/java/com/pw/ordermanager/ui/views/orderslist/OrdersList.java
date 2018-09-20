@@ -22,10 +22,12 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.templatemodel.Encode;
+import com.vaadin.flow.templatemodel.Include;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.Entity;
 import java.util.List;
 
 /**
@@ -41,13 +43,10 @@ import java.util.List;
 public class OrdersList extends PolymerTemplate<OrdersList.OrdersModel> {
 
     public interface OrdersModel extends TemplateModel {
-        @Encode(value = LongToStringEncoder.class, path = "id")
-        //@Encode(value = LongToStringEncoder.class, path = "owner.id")
         @Encode(value = OrderStatusToStringEncoder.class, path = "orderStatus")
-        //@Encode(value = LongToStringEncoder.class, path = "item.id")
-        @Encode(value = LongToStringEncoder.class, path = "amount")
         @Encode(value = LocalDateToStringEncoder.class, path = "date")
         @Encode(value = LongToStringEncoder.class, path = "counter")
+        @Include({"counter","totalPrice","title","orderStatus","date","description"})
         void setOrders(List<Order> orders);
     }
 

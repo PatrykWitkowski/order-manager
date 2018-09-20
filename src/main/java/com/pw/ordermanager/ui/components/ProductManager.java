@@ -1,0 +1,74 @@
+package com.pw.ordermanager.ui.components;
+
+import com.pw.ordermanager.backend.entity.OrderedProduct;
+import com.pw.ordermanager.backend.entity.Product;
+import com.pw.ordermanager.backend.entity.Seller;
+import com.pw.ordermanager.ui.views.dialogs.ItemSearchDialog;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.HasComponents;
+import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.data.renderer.NativeButtonRenderer;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Stream;
+
+@Tag("product-manager")
+public class ProductManager extends Component implements HasComponents {
+
+    private ProductSearchBox productLookup;
+    private Grid<OrderedProduct> selectedProducts = new Grid<>();
+    private Button addProduct = new Button("Add");
+    private Button deleteProduct = new Button("Delete");
+
+    public ProductManager(){
+        productLookup = new ProductSearchBox(new ItemSearchDialog());
+
+        OrderedProduct order = new OrderedProduct();
+        Seller seller = new Seller();
+        seller.setName("seller #1");
+        Product product = new Product();
+        product.setCode("CODE#1");
+        product.setName("Product#1");
+        Map<Seller,Double> pricesP = new HashMap<>();
+        pricesP.put(seller, 100.);
+        product.setPrices(pricesP);
+        order.setSeller(seller);
+        order.setProduct(product);
+        order.setAmount(1L);
+        order.setPrice(100);
+        selectedProducts.setItems(order);
+
+        selectedProducts.addColumn(o -> o.getProduct().getCode()).setHeader("Code");
+        selectedProducts.addColumn(o -> o.getProduct().getName()).setHeader("Product");
+        selectedProducts.addColumn(o -> o.getSeller().getName()).setHeader("Seller");
+        selectedProducts.addComponentColumn(o -> new NumberField(o, selectedProducts)).setHeader("Amount");
+        Grid.Column<OrderedProduct> prices = selectedProducts
+                .addColumn(o -> o.getPrice()).setHeader("Price").setKey("priceColumnKey");
+
+        ListDataProvider<OrderedProduct> dataProvider
+                = (ListDataProvider<OrderedProduct>)selectedProducts.getDataProvider();
+        double totalPrice = dataProvider.getItems().stream()
+                .map(OrderedProduct::getPrice)
+                .mapToDouble(Double::doubleValue)
+                .sum();
+        selectedProducts.appendFooterRow().getCell(prices).setText("Total: " + totalPrice);
+
+        HorizontalLayout buttonBar = new HorizontalLayout(addProduct, deleteProduct);
+        buttonBar.setClassName("buttons");
+        buttonBar.setSpacing(true);
+
+        selectedProducts.setWidth("40em");
+        VerticalLayout leftSideBar = new VerticalLayout(productLookup, buttonBar);
+        leftSideBar.setWidth("40%");
+        HorizontalLayout productsLayout = new HorizontalLayout(leftSideBar, selectedProducts);
+
+        add(productsLayout);
+    }
+}

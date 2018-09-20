@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class Product {
@@ -16,7 +17,7 @@ public class Product {
 
     //@Nullable
     //@OneToMany(mappedBy="product")
-    private List<Item> itemsOfProduct;
+    //private List<Item> itemsOfProduct;
 
     //@NotBlank
     private String code;
@@ -26,5 +27,7 @@ public class Product {
 
     private String description;
 
-    private String productWebsiteUrl;
+    private Map<Seller, Double> prices;
+
+    //private String productWebsiteUrl;
 }
