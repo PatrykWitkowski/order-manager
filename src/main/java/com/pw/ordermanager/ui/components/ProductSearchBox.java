@@ -48,6 +48,25 @@ public class ProductSearchBox extends Component implements HasComponents, HasSiz
             dialog.open();
         });
 
+        productSearchFieldOnFocus();
+        sellerSearchProductOnFocus();
+
+        HorizontalLayout upperSearchPanel = new HorizontalLayout(productSearchField, searchButton);
+        upperSearchPanel.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.END);
+        add(upperSearchPanel, sellerSearchField);
+    }
+
+    private void sellerSearchProductOnFocus() {
+        sellerSearchField.addFocusListener(e -> {
+            if(productSearchField.getValue() != null){
+                sellerSearchField.setItems(productSearchField.getValue().getPrices().keySet());
+            } else {
+                sellerSearchField.setItems(sellerService.findAllSellers());
+            }
+        });
+    }
+
+    private void productSearchFieldOnFocus() {
         productSearchField.addFocusListener(e -> {
             if(sellerSearchField.getValue() != null){
                 productSearchField.setItems(productService.findProductsBySeller(sellerSearchField.getValue()));
@@ -55,18 +74,6 @@ public class ProductSearchBox extends Component implements HasComponents, HasSiz
                 productSearchField.setItems(productService.findAllProducts());
             }
         });
-
-        sellerSearchField.addFocusListener(e -> {
-            if(productSearchField.getValue() != null){
-                sellerSearchField.setItems(productSearchField.getValue().getPrices().keySet());
-            } else {
-                //sellerSearchField.setItems(sellerService.findAllSellers());
-            }
-        });
-
-        HorizontalLayout upperSearchPanel = new HorizontalLayout(productSearchField, searchButton);
-        upperSearchPanel.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.END);
-        add(upperSearchPanel, sellerSearchField);
     }
 
     public boolean isFilled(){

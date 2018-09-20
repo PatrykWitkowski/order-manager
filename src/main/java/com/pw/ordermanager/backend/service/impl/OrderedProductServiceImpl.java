@@ -2,13 +2,11 @@ package com.pw.ordermanager.backend.service.impl;
 
 import com.pw.ordermanager.backend.entity.OrderedProduct;
 import com.pw.ordermanager.backend.service.OrderedProductService;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Service
 public class OrderedProductServiceImpl implements OrderedProductService {
 
     private volatile static OrderedProductServiceImpl instance;

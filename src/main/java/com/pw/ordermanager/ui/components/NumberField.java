@@ -19,6 +19,20 @@ public class NumberField extends TextField implements ValueProvider {
         setPattern("[0-9]*");
         setPreventInvalidInput(true);
 
+        numberFieldOnChange(orderedProduct, selectedProducts);
+
+        UpButton up = createUpButton();
+        DownButton down = createDownButton();
+
+        VerticalLayout upAndDown = new VerticalLayout(up, down);
+        upAndDown.setBoxSizing(BoxSizing.CONTENT_BOX);
+        upAndDown.setPadding(false);
+
+        setSuffixComponent(new Span(upAndDown));
+        setWidth("7em");
+    }
+
+    private void numberFieldOnChange(OrderedProduct orderedProduct, Grid<OrderedProduct> selectedProducts) {
         addValueChangeListener(e -> {
             Double newPrice = orderedProduct.getProduct()
                     .getPrices()
@@ -26,28 +40,30 @@ public class NumberField extends TextField implements ValueProvider {
             orderedProduct.setPrice(newPrice);
             orderedProduct.setAmount(Long.parseLong(getValue()));
 
-            ListDataProvider<OrderedProduct> dataProvider
-                    = (ListDataProvider<OrderedProduct>)selectedProducts.getDataProvider();
-            selectedProducts.setItems(dataProvider.getItems());
-
-            double totalPrice = dataProvider.getItems().stream()
-                    .map(OrderedProduct::getPrice)
-                    .mapToDouble(Double::doubleValue)
-                    .sum();
-            String totalPriceText = String.format("%.2f", totalPrice);
-            selectedProducts.getFooterRows().stream().findFirst().ifPresent(footerRow -> {
-                footerRow.getCell(selectedProducts.getColumnByKey("priceColumnKey")).setText("Total: " + totalPriceText);
-            });
+            ListDataProvider<OrderedProduct> dataProvider = updateGrid(selectedProducts);
+            updateTotalPrice(selectedProducts, dataProvider);
         });
+    }
 
-        UpButton up = new UpButton();
-        up.addClickListener(e -> {
-            Long oldValue = Long.parseLong(getValue());
-            oldValue++;
-            String newValue = oldValue.toString();
-            setValue(newValue);
+    private ListDataProvider<OrderedProduct> updateGrid(Grid<OrderedProduct> selectedProducts) {
+        ListDataProvider<OrderedProduct> dataProvider
+                = (ListDataProvider<OrderedProduct>)selectedProducts.getDataProvider();
+        selectedProducts.setItems(dataProvider.getItems());
+        return dataProvider;
+    }
+
+    private void updateTotalPrice(Grid<OrderedProduct> selectedProducts, ListDataProvider<OrderedProduct> dataProvider) {
+        double totalPrice = dataProvider.getItems().stream()
+                .map(OrderedProduct::getPrice)
+                .mapToDouble(Double::doubleValue)
+                .sum();
+        String totalPriceText = String.format("%.2f", totalPrice);
+        selectedProducts.getFooterRows().stream().findFirst().ifPresent(footerRow -> {
+            footerRow.getCell(selectedProducts.getColumnByKey("priceColumnKey")).setText("Total: " + totalPriceText);
         });
+    }
 
+    private DownButton createDownButton() {
         DownButton down = new DownButton();
         down.addClickListener(e -> {
             Long oldValue = Long.parseLong(getValue());
@@ -57,13 +73,18 @@ public class NumberField extends TextField implements ValueProvider {
             String newValue = oldValue.toString();
             setValue(newValue);
         });
+        return down;
+    }
 
-        VerticalLayout upAndDown = new VerticalLayout(up, down);
-        upAndDown.setBoxSizing(BoxSizing.CONTENT_BOX);
-        upAndDown.setPadding(false);
-
-        setSuffixComponent(new Span(upAndDown));
-        setWidth("7em");
+    private UpButton createUpButton() {
+        UpButton up = new UpButton();
+        up.addClickListener(e -> {
+            Long oldValue = Long.parseLong(getValue());
+            oldValue++;
+            String newValue = oldValue.toString();
+            setValue(newValue);
+        });
+        return up;
     }
 
     @Override

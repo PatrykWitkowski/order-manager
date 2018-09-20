@@ -11,6 +11,7 @@ import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -24,24 +25,34 @@ public class ProductManager extends Component implements HasComponents {
     private Grid<OrderedProduct> selectedProducts = new Grid<>();
     private Button addProduct = new Button("Add");
     private Button deleteProduct = new Button("Delete");
+    private Column<OrderedProduct> prices;
 
     public ProductManager(){
-        //cannot autowired because it is in component which sie create by new
+        //cannot autowired because it is in component which is created by new
         orderedProductService = OrderedProductServiceImpl.getInstance();
 
         productLookup = new ProductSearchBox(new ProductSearchDialog());
 
-        selectedProducts.addColumn(o -> o.getProduct().getCode()).setHeader("Code");
-        selectedProducts.addColumn(o -> o.getProduct().getName()).setHeader("Product");
-        selectedProducts.addColumn(o -> o.getSeller().getName()).setHeader("Seller");
-        selectedProducts.addComponentColumn(o -> new NumberField(o, selectedProducts)).setHeader("Amount");
-        Grid.Column<OrderedProduct> prices = selectedProducts
-                .addColumn(o -> String.format("%.2f", o.getPrice()))
-                .setHeader("Price").setKey("priceColumnKey");
-
+        createGrid();
+        createColumns();
         calculateTotalPrice(prices);
+        createAddProduct();
+        createDeleteProduct();
 
-        deleteProduct.setEnabled(false);
+        HorizontalLayout buttonBar = new HorizontalLayout(addProduct, deleteProduct);
+        buttonBar.setClassName("buttons");
+        buttonBar.setSpacing(true);
+
+        selectedProducts.setWidth("40em");
+        VerticalLayout leftSideBar = new VerticalLayout(productLookup, buttonBar);
+        leftSideBar.setWidth("40%");
+        HorizontalLayout productsLayout = new HorizontalLayout(leftSideBar, selectedProducts);
+
+        add(productsLayout);
+    }
+
+    private void createGrid() {
+        selectedProducts.setItems(orderedProductService.findOrderedProducts());
         selectedProducts.addSelectionListener(e -> {
            if(e.getAllSelectedItems().isEmpty()){
                deleteProduct.setEnabled(false);
@@ -49,13 +60,18 @@ public class ProductManager extends Component implements HasComponents {
                deleteProduct.setEnabled(true);
            }
         });
+    }
 
-        selectedProducts.setItems(orderedProductService.findOrderedProducts());
-        deleteProduct.addClickListener(e -> {
-            selectedProducts.getSelectedItems().stream().forEach(item -> orderedProductService.delete(item));
-            selectedProducts.setItems(orderedProductService.findOrderedProducts());
-            calculateTotalPrice(prices);
-        });
+    private void createColumns() {
+        selectedProducts.addColumn(o -> o.getProduct().getCode()).setHeader("Code");
+        selectedProducts.addColumn(o -> o.getProduct().getName()).setHeader("Product");
+        selectedProducts.addColumn(o -> o.getSeller().getName()).setHeader("Seller");
+        selectedProducts.addComponentColumn(o -> new NumberField(o, selectedProducts)).setHeader("Amount");
+        prices = selectedProducts.addColumn(o -> formatToCurrencyPrecision(o.getPrice())).setHeader("Price").setKey("priceColumnKey");
+    }
+
+    private void createAddProduct() {
+        addProduct.getElement().setAttribute("theme", "primary");
         addProduct.addClickListener(e -> {
             if(productLookup.isFilled()){
                 OrderedProduct newOrderedProduct= new OrderedProduct();
@@ -72,27 +88,26 @@ public class ProductManager extends Component implements HasComponents {
                 }
             }
         });
-
-        HorizontalLayout buttonBar = new HorizontalLayout(addProduct, deleteProduct);
-        buttonBar.setClassName("buttons");
-        buttonBar.setSpacing(true);
-
-        selectedProducts.setWidth("40em");
-        VerticalLayout leftSideBar = new VerticalLayout(productLookup, buttonBar);
-        leftSideBar.setWidth("40%");
-        HorizontalLayout productsLayout = new HorizontalLayout(leftSideBar, selectedProducts);
-
-        add(productsLayout);
     }
 
-    private void calculateTotalPrice(Grid.Column<OrderedProduct> prices) {
+    private void createDeleteProduct() {
+        deleteProduct.getElement().setAttribute("theme", "error");
+        deleteProduct.setEnabled(false);
+        deleteProduct.addClickListener(e -> {
+            selectedProducts.getSelectedItems().stream().forEach(item -> orderedProductService.delete(item));
+            selectedProducts.setItems(orderedProductService.findOrderedProducts());
+            calculateTotalPrice(prices);
+        });
+    }
+
+    private void calculateTotalPrice(Column<OrderedProduct> prices) {
         ListDataProvider<OrderedProduct> dataProvider
                 = (ListDataProvider<OrderedProduct>)selectedProducts.getDataProvider();
         double totalPrice = dataProvider.getItems().stream()
                 .map(OrderedProduct::getPrice)
                 .mapToDouble(Double::doubleValue)
                 .sum();
-        String totalPriceText = String.format("%.2f", totalPrice);
+        String totalPriceText = formatToCurrencyPrecision(totalPrice);
         if(selectedProducts.getFooterRows().isEmpty()){
             selectedProducts.appendFooterRow().getCell(prices).setText("Total: " + totalPriceText);
         } else {
@@ -100,6 +115,10 @@ public class ProductManager extends Component implements HasComponents {
                 footer.getCell(selectedProducts.getColumnByKey("priceColumnKey")).setText("Total: " + totalPriceText);
             });
         }
+    }
+
+    private String formatToCurrencyPrecision(double totalPrice) {
+        return String.format("%.2f", totalPrice);
     }
 
 }

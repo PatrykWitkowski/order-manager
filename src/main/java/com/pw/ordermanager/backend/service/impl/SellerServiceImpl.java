@@ -3,7 +3,6 @@ package com.pw.ordermanager.backend.service.impl;
 import com.pw.ordermanager.backend.entity.Seller;
 import com.pw.ordermanager.backend.service.SellerService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SellerServiceImpl implements SellerService {
