@@ -1,6 +1,7 @@
 package com.pw.ordermanager.backend.utils.security;
 
 import com.pw.ordermanager.backend.dts.UserDts;
+import com.vaadin.flow.component.UI;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,5 +42,10 @@ public class SecurityUtils {
 
     public static void revokeAccess(String token){
         authenticatedUsers.remove(token);
+    }
+
+    public static UserDts getCurrentUser(){
+        String token = UI.getCurrent().getSession().getCsrfToken();
+        return Optional.ofNullable(authenticatedUsers.get(token)).orElse(null);
     }
 }
