@@ -1,6 +1,5 @@
 package com.pw.ordermanager.ui.components;
 
-import com.helger.commons.annotation.Singleton;
 import com.pw.ordermanager.backend.entity.OrderedProduct;
 import com.pw.ordermanager.backend.entity.Product;
 import com.pw.ordermanager.backend.entity.Seller;
@@ -15,9 +14,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.annotation.PostConstruct;
 
 @Tag("product-manager")
 public class ProductManager extends Component implements HasComponents {
