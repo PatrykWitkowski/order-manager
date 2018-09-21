@@ -16,11 +16,11 @@ public class Seller {
     private Long sellerId;
 
     @NotNull
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="user_id")
     private User owner;
 
-    @OneToOne(fetch=FetchType.LAZY, mappedBy="seller")
+    @OneToOne(fetch=FetchType.EAGER, mappedBy="seller")
     private OrderedProduct order;
 
     @NotBlank

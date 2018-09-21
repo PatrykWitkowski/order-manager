@@ -16,17 +16,17 @@ public class OrderedProduct {
     private Long orderedProductId;
 
     @NotNull
-    @OneToOne(fetch=FetchType.LAZY)
+    @OneToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="PRODUCT_ID")
     private Product product;
 
     @NotNull
-    @OneToOne(fetch=FetchType.LAZY)
+    @OneToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="SELLER_ID")
     private Seller seller;
 
     @NotNull
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="ORDER_ID")
     private Order order;
 

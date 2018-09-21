@@ -17,11 +17,11 @@ public class Product {
     private Long productId;
 
     @NotNull
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="user_id")
     private User owner;
 
-    @OneToOne(fetch=FetchType.LAZY, mappedBy="product")
+    @OneToOne(fetch=FetchType.EAGER, mappedBy="product")
     private OrderedProduct order;
 
     @NotBlank

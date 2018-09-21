@@ -20,7 +20,7 @@ public class Order implements Serializable {
     private Long orderId;
 
     @NotNull
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="user_id")
     private User owner;
 
@@ -32,7 +32,7 @@ public class Order implements Serializable {
     @Column(length = 8)
     private OrderStatus status;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
     private Set<OrderedProduct> orderedProduct;
 
     /**

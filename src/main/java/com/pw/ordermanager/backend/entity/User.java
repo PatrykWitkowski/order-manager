@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,13 +34,13 @@ public class User {
     @Column(length = 8)
     private UserType type;
 
-    @OneToMany(mappedBy="owner")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="owner")
     private Set<Order> orders;
 
-    @OneToMany(mappedBy="owner")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="owner")
     private Set<Product> products;
 
-    @OneToMany(mappedBy="owner")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="owner")
     private Set<Seller> sellers;
 
     public User(String username, String password, UserType type){
