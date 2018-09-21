@@ -3,34 +3,37 @@ package com.pw.ordermanager.backend.entity;
 import com.pw.ordermanager.backend.common.OrderStatus;
 import lombok.Data;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 @Data
+@Entity
+@Table(name = "orders")
 public class Order implements Serializable {
 
-    //@Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long orderId;
 
-    //@NotNull
-    //@ManyToOne(fetch=FetchType.LAZY)
-    //@JoinColumn(name="OWNER_ID")
+    @NotNull
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="user_id")
     private User owner;
 
+    @NotBlank
     private String title;
 
-    //@NotBlank
-    //@Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
+    @NotBlank
+    @Enumerated(EnumType.STRING)
+    @Column(length = 8)
+    private OrderStatus status;
 
-    //@NotNull
-    //@OneToOne
-    private List<OrderedProduct> orderedProduct;
-
-    //@NotNull
-    private Long amount;
+    @OneToMany(mappedBy = "order")
+    private Set<OrderedProduct> orderedProduct;
 
     /**
      * Depends from status:
@@ -39,12 +42,12 @@ public class Order implements Serializable {
      * delivered - date of delivery
      * cancelled - date of cancellation
      */
-    private LocalDate date;
+    @NotNull
+    private LocalDate orderDate;
 
     private String description;
 
     private double totalPrice;
 
     private Long counter;
-
 }

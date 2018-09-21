@@ -2,24 +2,38 @@ package com.pw.ordermanager.backend.entity;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Data
-//@Entity
+@Entity
+@Table(name = "ordered_products")
 public class OrderedProduct {
 
-    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long orderedProductId;
 
-    //@OneToOne
+    @NotNull
+    @OneToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="PRODUCT_ID")
     private Product product;
 
-    //@OneToOne
+    @NotNull
+    @OneToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="SELLER_ID")
     private Seller seller;
 
+    @NotNull
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="ORDER_ID")
+    private Order order;
+
+    @NotNull
     private Long amount;
 
+    @NotNull
     private double price;
 
 

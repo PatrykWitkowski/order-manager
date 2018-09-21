@@ -2,21 +2,29 @@ package com.pw.ordermanager.backend.entity;
 
 import lombok.Data;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @Data
+@Entity
+@Table(name = "sellers")
 public class Seller {
 
-    //@Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long sellerId;
 
-    //@Nullable
-    //@OneToMany(mappedBy="seller")
-    //private List<Item> itemsOfSeller;
+    @NotNull
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="user_id")
+    private User owner;
 
-    //@NotBlank
-    //private String code;
+    @OneToOne(fetch=FetchType.LAZY, mappedBy="seller")
+    private OrderedProduct order;
 
-    //@NotBlank
+    @NotBlank
+    @Column(unique = true)
     private String name;
 
     private String description;

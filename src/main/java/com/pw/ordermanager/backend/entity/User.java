@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -19,7 +22,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long userId;
 
     @NotBlank
     @Column(unique = true)
@@ -32,12 +35,21 @@ public class User {
     @Column(length = 8)
     private UserType type;
 
-    //@OneToMany(mappedBy="owner")
-    //private List<Order> orders;
+    @OneToMany(mappedBy="owner")
+    private Set<Order> orders;
+
+    @OneToMany(mappedBy="owner")
+    private Set<Product> products;
+
+    @OneToMany(mappedBy="owner")
+    private Set<Seller> sellers;
 
     public User(String username, String password, UserType type){
         this.username = username;
         this.password = password;
         this.type = type;
+        this.orders = new HashSet<>();
+        this.products = new HashSet<>();
+        this.sellers = new HashSet<>();
     }
 }

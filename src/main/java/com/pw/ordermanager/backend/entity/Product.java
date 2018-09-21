@@ -2,35 +2,45 @@ package com.pw.ordermanager.backend.entity;
 
 import lombok.Data;
 
-import javax.annotation.Nullable;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.List;
+import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 @Data
+@Entity
+@Table(name = "products")
 public class Product {
 
-    //@Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long productId;
 
-    //@Nullable
-    //@OneToMany(mappedBy="product")
-    //private List<Item> itemsOfProduct;
+    @NotNull
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="user_id")
+    private User owner;
 
-    //@NotBlank
+    @OneToOne(fetch=FetchType.LAZY, mappedBy="product")
+    private OrderedProduct order;
+
+    @NotBlank
+    @Column(unique = true)
     private String code;
 
-    //@NotBlank
-    // max 13
+    @NotBlank
+    @Column(length = 12)
     private String name;
 
     private String description;
 
+    @ElementCollection
+    @CollectionTable(name="seller_prices")
+    @MapKeyJoinColumn(name="seller_id")
+    @Column(name="prices")
     private Map<Seller, Double> prices;
 
-    //private String productWebsiteUrl;
+    private String productWebsiteUrl;
 
     @Override
     public String toString(){
