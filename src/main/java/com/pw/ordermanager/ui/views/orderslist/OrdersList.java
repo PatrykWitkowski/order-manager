@@ -1,7 +1,14 @@
 package com.pw.ordermanager.ui.views.orderslist;
 
 import com.pw.ordermanager.backend.entity.Order;
+import com.pw.ordermanager.backend.entity.Product;
+import com.pw.ordermanager.backend.entity.Seller;
+import com.pw.ordermanager.backend.entity.User;
+import com.pw.ordermanager.backend.jpa.SellerRepository;
 import com.pw.ordermanager.backend.service.OrderService;
+import com.pw.ordermanager.backend.service.OrderedProductService;
+import com.pw.ordermanager.backend.service.SellerService;
+import com.pw.ordermanager.backend.utils.security.SecurityUtils;
 import com.pw.ordermanager.ui.MainLayout;
 import com.pw.ordermanager.ui.common.AbstractEditorDialog;
 import com.pw.ordermanager.ui.encoders.LocalDateToStringEncoder;
@@ -19,16 +26,22 @@ import com.vaadin.flow.component.polymertemplate.ModelItem;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.templatemodel.Encode;
 import com.vaadin.flow.templatemodel.Include;
 import com.vaadin.flow.templatemodel.TemplateModel;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.Entity;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Displays the list of available orders, with a search filter as well as
@@ -40,7 +53,14 @@ import java.util.List;
 @PageTitle("Order List")
 @Tag("orders-list")
 @HtmlImport("frontend://src/views/orderslist/orders-list.html")
-public class OrdersList extends PolymerTemplate<OrdersList.OrdersModel> {
+public class OrdersList extends PolymerTemplate<OrdersList.OrdersModel> implements BeforeEnterObserver {
+
+    @Override
+    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
+        if(SecurityUtils.getCurrentUser() != null){
+            updateList();
+        }
+    }
 
     public interface OrdersModel extends TemplateModel {
         @Encode(value = OrderStatusToStringEncoder.class, path = "orderStatus")
@@ -52,6 +72,9 @@ public class OrdersList extends PolymerTemplate<OrdersList.OrdersModel> {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private OrderedProductService orderedProductService;
 
     @Id("search")
     private TextField search;
@@ -76,12 +99,11 @@ public class OrdersList extends PolymerTemplate<OrdersList.OrdersModel> {
 
         addOrder.addClickListener(e -> openForm(new Order(),
                 AbstractEditorDialog.Operation.ADD));
-
-        updateList();
     }
 
     public void saveUpdate(Order order,
                            AbstractEditorDialog.Operation operation) {
+        order.getOrderedProduct().forEach(orderedProduct -> orderedProductService.save(orderedProduct));
         orderService.saveOrder(order);
         updateList();
         Notification.show(
@@ -90,6 +112,7 @@ public class OrdersList extends PolymerTemplate<OrdersList.OrdersModel> {
     }
 
     public void deleteUpdate(Order order) {
+        order.getOrderedProduct().forEach(orderedProduct -> orderedProductService.delete(orderedProduct));
         orderService.deleteOrder(order);
         updateList();
         Notification.show("Beverage successfully deleted.", 3000,
@@ -97,7 +120,7 @@ public class OrdersList extends PolymerTemplate<OrdersList.OrdersModel> {
     }
 
     private void updateList() {
-        List<Order> orders = orderService.findOrders(search.getValue());
+        List<Order> orders = orderService.findOrders(SecurityUtils.getCurrentUser().getUser(), search.getValue());
         if (search.isEmpty()) {
             header.setText("Orders");
             header.add(new Span(orders.size() + " in total"));
@@ -122,6 +145,7 @@ public class OrdersList extends PolymerTemplate<OrdersList.OrdersModel> {
         if (orderForm.getElement().getParent() == null) {
             getUI().ifPresent(ui -> ui.add(orderForm));
         }
+        order.setOwner(SecurityUtils.getCurrentUser().getUser());
         orderForm.open(order, operation);
     }
 }
