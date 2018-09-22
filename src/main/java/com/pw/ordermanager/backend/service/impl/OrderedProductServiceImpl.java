@@ -1,13 +1,19 @@
 package com.pw.ordermanager.backend.service.impl;
 
 import com.pw.ordermanager.backend.entity.OrderedProduct;
+import com.pw.ordermanager.backend.jpa.OrderedProductRepository;
 import com.pw.ordermanager.backend.service.OrderedProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Service
 public class OrderedProductServiceImpl implements OrderedProductService {
+
+    @Autowired
+    private OrderedProductRepository orderedProductRepository;
 
     private volatile static OrderedProductServiceImpl instance;
 
@@ -26,26 +32,20 @@ public class OrderedProductServiceImpl implements OrderedProductService {
         return instance;
     }
 
-    List<OrderedProduct> temp = new ArrayList<>();
-
-    @Override
-    public List<OrderedProduct> findOrderedProducts() {
-        return temp;
-    }
 
     @Override
     public void save(OrderedProduct orderedProduct) {
-        temp.add(orderedProduct);
+        orderedProductRepository.save(orderedProduct);
     }
 
     @Override
     public void delete(OrderedProduct orderedProduct) {
-        temp.remove(orderedProduct);
+        orderedProductRepository.delete(orderedProduct);
     }
 
     @Override
-    public boolean checkIfOrderedProductIsUnique(OrderedProduct orderedProduct) {
-        return findOrderedProducts().stream()
+    public boolean checkIfOrderedProductIsUnique(List<OrderedProduct> products, OrderedProduct orderedProduct) {
+        return products.stream()
                 .noneMatch(p -> Objects.equals(p, orderedProduct));
     }
 }

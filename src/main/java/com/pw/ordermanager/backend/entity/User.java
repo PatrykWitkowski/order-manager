@@ -5,11 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -17,7 +19,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,21 +36,21 @@ public class User {
     @Column(length = 8)
     private UserType type;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy="owner")
-    private Set<Order> orders;
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy="owner")
+    private List<Order> orders;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy="owner")
-    private Set<Product> products;
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy="owner")
+    private List<Product> products;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy="owner")
-    private Set<Seller> sellers;
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy="owner")
+    private List<Seller> sellers;
 
     public User(String username, String password, UserType type){
         this.username = username;
         this.password = password;
         this.type = type;
-        this.orders = new HashSet<>();
-        this.products = new HashSet<>();
-        this.sellers = new HashSet<>();
     }
 }

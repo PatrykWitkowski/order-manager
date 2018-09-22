@@ -5,10 +5,7 @@ import com.pw.ordermanager.backend.entity.Seller;
 import com.pw.ordermanager.backend.service.ProductService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -61,9 +58,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> findProductsBySeller(Seller seller) {
-        return findAllProducts().stream()
+    public Set<Product> findProductsBySeller(List<Product> products, Seller seller) {
+        return products.stream()
                 .filter(p -> p.getPrices().keySet().contains(seller))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 }

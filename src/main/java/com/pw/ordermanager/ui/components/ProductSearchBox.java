@@ -1,11 +1,14 @@
 package com.pw.ordermanager.ui.components;
 
+import com.pw.ordermanager.backend.entity.Order;
 import com.pw.ordermanager.backend.entity.Product;
 import com.pw.ordermanager.backend.entity.Seller;
+import com.pw.ordermanager.backend.entity.User;
 import com.pw.ordermanager.backend.service.ProductService;
 import com.pw.ordermanager.backend.service.SellerService;
 import com.pw.ordermanager.backend.service.impl.ProductServiceImpl;
 import com.pw.ordermanager.backend.service.impl.SellerServiceImpl;
+import com.pw.ordermanager.backend.utils.security.SecurityUtils;
 import com.pw.ordermanager.ui.common.AbstractSearchDialog;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasComponents;
@@ -18,9 +21,13 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import lombok.Getter;
+import org.hibernate.Hibernate;
+import org.hibernate.Session;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Tag("product-search-box")
 public class ProductSearchBox extends Component implements HasComponents, HasSize {
@@ -61,18 +68,20 @@ public class ProductSearchBox extends Component implements HasComponents, HasSiz
             if(productSearchField.getValue() != null){
                 sellerSearchField.setItems(productSearchField.getValue().getPrices().keySet());
             } else {
-                sellerSearchField.setItems(sellerService.findAllSellers());
+                final User currentOrderOwner = SecurityUtils.getCurrentUser().getUser();
+                    sellerSearchField.setItems(currentOrderOwner.getSellers());
             }
         });
     }
 
     private void productSearchFieldOnFocus() {
         productSearchField.addFocusListener(e -> {
-            if(sellerSearchField.getValue() != null){
-                productSearchField.setItems(productService.findProductsBySeller(sellerSearchField.getValue()));
-            } else {
-                productSearchField.setItems(productService.findAllProducts());
-            }
+            final User currentOrderOwner = SecurityUtils.getCurrentUser().getUser();
+                if(sellerSearchField.getValue() != null){
+                    productSearchField.setItems(productService.findProductsBySeller(currentOrderOwner.getProducts(), sellerSearchField.getValue()));
+                } else {
+                    productSearchField.setItems(currentOrderOwner.getProducts());
+                }
         });
     }
 

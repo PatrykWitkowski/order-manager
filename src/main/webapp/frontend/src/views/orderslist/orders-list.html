@@ -233,13 +233,13 @@
                         </div>
                         <div class="order__details">
                             <h4 class="order__name">[[item.title]]</h4>
-                            <template is="dom-if" if="[[item.orderStatus]]">
-                                <p class="order__category" data-status$="[[item.orderStatus]]" theme="badge small">[[item.orderStatus]]</p>
+                            <template is="dom-if" if="[[item.status]]">
+                                <p class="order__category" data-status$="[[item.status]]" theme="badge small">[[item.status]]</p>
                             </template>
                         </div>
                         <div class="order__date">
                             <h5>Date</h5>
-                            <p>[[item.date]]</p>
+                            <p>[[item.orderDate]]</p>
                         </div>
                         <vaadin-button on-click="edit" class="order__edit" theme="tertiary">
                             <iron-icon icon="lumo:edit"></iron-icon><span>Edit</span>

@@ -9,7 +9,7 @@ CREATE TABLE users (
 CREATE TABLE sellers (
   seller_id bigint NOT NULL AUTO_INCREMENT,
   user_id bigint NOT NULL,
-  order_col bigint NOT NULL,
+  order_col bigint,
   name varchar(255) NOT NULL UNIQUE,
   description varchar(255),
   seller_website_url varchar(255),
@@ -20,7 +20,7 @@ CREATE TABLE sellers (
 CREATE TABLE products (
   product_id bigint NOT NULL AUTO_INCREMENT,
   user_id bigint NOT NULL,
-  order_col bigint NOT NULL,
+  order_col bigint,
   code varchar(10) NOT NULL UNIQUE,
   name varchar(12) NOT NULL,
   description varchar(255),

@@ -1,32 +1,31 @@
 package com.pw.ordermanager.backend.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Objects;
+import java.io.Serializable;
 
 @Data
 @Entity
 @Table(name = "ordered_products")
-public class OrderedProduct {
+@EqualsAndHashCode(exclude={"product", "seller", "order"})
+public class OrderedProduct implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderedProductId;
 
-    @NotNull
-    @OneToOne(fetch=FetchType.EAGER)
+    @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="PRODUCT_ID")
     private Product product;
 
-    @NotNull
-    @OneToOne(fetch=FetchType.EAGER)
+    @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="SELLER_ID")
     private Seller seller;
 
-    @NotNull
-    @ManyToOne(fetch=FetchType.EAGER)
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="ORDER_ID")
     private Order order;
 
@@ -35,19 +34,4 @@ public class OrderedProduct {
 
     @NotNull
     private double price;
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        OrderedProduct that = (OrderedProduct) o;
-        return Objects.equals(product, that.product) &&
-                Objects.equals(seller, that.seller);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(product, seller);
-    }
 }

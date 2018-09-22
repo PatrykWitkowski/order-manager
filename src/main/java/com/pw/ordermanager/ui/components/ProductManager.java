@@ -1,9 +1,11 @@
 package com.pw.ordermanager.ui.components;
 
+import com.pw.ordermanager.backend.entity.Order;
 import com.pw.ordermanager.backend.entity.OrderedProduct;
 import com.pw.ordermanager.backend.entity.Product;
 import com.pw.ordermanager.backend.entity.Seller;
 import com.pw.ordermanager.backend.service.OrderedProductService;
+import com.pw.ordermanager.backend.service.SellerService;
 import com.pw.ordermanager.backend.service.impl.OrderedProductServiceImpl;
 import com.pw.ordermanager.ui.views.dialogs.ProductSearchDialog;
 import com.vaadin.flow.component.Component;
@@ -17,6 +19,10 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Tag("product-manager")
 public class ProductManager extends Component implements HasComponents {
 
@@ -27,8 +33,10 @@ public class ProductManager extends Component implements HasComponents {
     private Button addProduct = new Button("Add");
     private Button deleteProduct = new Button("Delete");
     private Column<OrderedProduct> prices;
+    private Order currentOrder;
 
-    public ProductManager(){
+    public ProductManager(Order currentItem){
+        currentOrder = currentItem;
         //cannot autowired because it is in component which is created by new
         orderedProductService = OrderedProductServiceImpl.getInstance();
 
@@ -53,7 +61,10 @@ public class ProductManager extends Component implements HasComponents {
     }
 
     private void createGrid() {
-        selectedProducts.setItems(orderedProductService.findOrderedProducts());
+        final List<OrderedProduct> orderedProduct = getCurrentOrder().getOrderedProduct();
+        if(orderedProduct != null){
+            selectedProducts.setItems(orderedProduct);
+        }
         selectedProducts.addSelectionListener(e -> {
            if(e.getAllSelectedItems().isEmpty()){
                deleteProduct.setEnabled(false);
@@ -82,9 +93,11 @@ public class ProductManager extends Component implements HasComponents {
                 newOrderedProduct.setSeller(sellerValue);
                 newOrderedProduct.setAmount(1L);
                 newOrderedProduct.setPrice(productValue.getPrices().get(sellerValue));
-                if(orderedProductService.checkIfOrderedProductIsUnique(newOrderedProduct)){
-                    orderedProductService.save(newOrderedProduct);
-                    selectedProducts.setItems(orderedProductService.findOrderedProducts());
+                newOrderedProduct.setOrder(getCurrentOrder());
+                if(orderedProductService.checkIfOrderedProductIsUnique(getCurrentOrder().getOrderedProduct(), newOrderedProduct)){
+                    //orderedProductService.save(newOrderedProduct);
+                    getCurrentOrder().getOrderedProduct().add(newOrderedProduct);
+                    selectedProducts.setItems(getCurrentOrder().getOrderedProduct());
                     calculateTotalPrice(prices);
                 } else {
                     Notification.show("This product is already added.", 4000, Notification.Position.MIDDLE);
@@ -99,8 +112,9 @@ public class ProductManager extends Component implements HasComponents {
         deleteProduct.getElement().setAttribute("theme", "error");
         deleteProduct.setEnabled(false);
         deleteProduct.addClickListener(e -> {
-            selectedProducts.getSelectedItems().stream().forEach(item -> orderedProductService.delete(item));
-            selectedProducts.setItems(orderedProductService.findOrderedProducts());
+            final List<OrderedProduct> orderedProducts = getCurrentOrder().getOrderedProduct().stream().filter(item -> !selectedProducts.getSelectedItems().contains(item)).collect(Collectors.toList());
+            getCurrentOrder().setOrderedProduct(orderedProducts);
+            selectedProducts.setItems(orderedProducts);
             calculateTotalPrice(prices);
         });
     }
@@ -112,6 +126,7 @@ public class ProductManager extends Component implements HasComponents {
                 .map(OrderedProduct::getPrice)
                 .mapToDouble(Double::doubleValue)
                 .sum();
+        getCurrentOrder().setTotalPrice(totalPrice);
         String totalPriceText = formatToCurrencyPrecision(totalPrice);
         if(selectedProducts.getFooterRows().isEmpty()){
             selectedProducts.appendFooterRow().getCell(prices).setText("Total: " + totalPriceText);
@@ -126,4 +141,11 @@ public class ProductManager extends Component implements HasComponents {
         return String.format("%.2f", totalPrice);
     }
 
+    public void setCurrentItem(Order item) {
+        this.currentOrder = item;
+    }
+
+    private Order getCurrentOrder(){
+        return currentOrder;
+    }
 }

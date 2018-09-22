@@ -1,16 +1,19 @@
 package com.pw.ordermanager.backend.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Map;
 
 @Data
 @Entity
 @Table(name = "products")
-public class Product {
+@EqualsAndHashCode(exclude={"owner", "order"})
+public class Product implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +37,7 @@ public class Product {
 
     private String description;
 
-    @ElementCollection
+    @ElementCollection(fetch=FetchType.EAGER)
     @CollectionTable(name="seller_prices")
     @MapKeyJoinColumn(name="seller_id")
     @Column(name="prices")

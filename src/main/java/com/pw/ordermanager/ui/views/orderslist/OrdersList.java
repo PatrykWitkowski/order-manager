@@ -20,6 +20,7 @@ import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.polymertemplate.EventHandler;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.ModelItem;
@@ -38,10 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.Entity;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Displays the list of available orders, with a search filter as well as
@@ -63,10 +61,11 @@ public class OrdersList extends PolymerTemplate<OrdersList.OrdersModel> implemen
     }
 
     public interface OrdersModel extends TemplateModel {
-        @Encode(value = OrderStatusToStringEncoder.class, path = "orderStatus")
-        @Encode(value = LocalDateToStringEncoder.class, path = "date")
+        @Encode(value = OrderStatusToStringEncoder.class, path = "status")
+        @Encode(value = LocalDateToStringEncoder.class, path = "orderDate")
         @Encode(value = LongToStringEncoder.class, path = "counter")
-        @Include({"counter","totalPrice","title","orderStatus","date","description"})
+        @Encode(value = LongToStringEncoder.class, path = "orderId")
+        @Include({"counter","totalPrice","title","status","orderDate","description","orderId"})
         void setOrders(List<Order> orders);
     }
 
@@ -97,25 +96,32 @@ public class OrdersList extends PolymerTemplate<OrdersList.OrdersModel> implemen
         search.addValueChangeListener(e -> updateList());
         search.setValueChangeMode(ValueChangeMode.EAGER);
 
-        addOrder.addClickListener(e -> openForm(new Order(),
-                AbstractEditorDialog.Operation.ADD));
+        addOrder.addClickListener(e -> {
+            final User currentUser = SecurityUtils.getCurrentUser().getUser();
+            final Order newOrder = new Order(currentUser);
+            //currentUser.getOrders().add(newOrder);
+            openForm(newOrder, AbstractEditorDialog.Operation.ADD);
+        });
     }
 
     public void saveUpdate(Order order,
                            AbstractEditorDialog.Operation operation) {
-        order.getOrderedProduct().forEach(orderedProduct -> orderedProductService.save(orderedProduct));
+        order.setTotalPrice(order.getOrderedProduct().stream().map(p -> p.getPrice())
+                .mapToDouble(Double::doubleValue).sum());
         orderService.saveOrder(order);
+        order.getOrderedProduct().forEach(orderedProduct -> orderedProductService.save(orderedProduct));
         updateList();
         Notification.show(
-                "Beverage successfully " + operation.getNameInText() + "ed.",
+                "Order successfully " + operation.getNameInText() + "ed.",
                 3000, Notification.Position.BOTTOM_START);
     }
 
     public void deleteUpdate(Order order) {
         order.getOrderedProduct().forEach(orderedProduct -> orderedProductService.delete(orderedProduct));
+        order.setOrderedProduct(null);
         orderService.deleteOrder(order);
         updateList();
-        Notification.show("Beverage successfully deleted.", 3000,
+        Notification.show("Order successfully deleted.", 3000,
                 Notification.Position.BOTTOM_START);
     }
 
@@ -135,7 +141,9 @@ public class OrdersList extends PolymerTemplate<OrdersList.OrdersModel> implemen
 
     @EventHandler
     private void edit(@ModelItem Order order) {
-        openForm(order, AbstractEditorDialog.Operation.EDIT);
+        final Long orderId = order.getOrderId();
+        Order orderToEdit = orderService.findOrderById(orderId);
+        openForm(orderToEdit, AbstractEditorDialog.Operation.EDIT);
     }
 
     private void openForm(Order order,
@@ -145,7 +153,6 @@ public class OrdersList extends PolymerTemplate<OrdersList.OrdersModel> implemen
         if (orderForm.getElement().getParent() == null) {
             getUI().ifPresent(ui -> ui.add(orderForm));
         }
-        order.setOwner(SecurityUtils.getCurrentUser().getUser());
         orderForm.open(order, operation);
     }
 }

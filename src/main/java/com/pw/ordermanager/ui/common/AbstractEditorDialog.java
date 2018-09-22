@@ -29,6 +29,7 @@ import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.shared.Registration;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import org.atmosphere.config.service.Get;
 
 import java.io.Serializable;
@@ -112,6 +113,8 @@ public abstract class AbstractEditorDialog<T extends Serializable>
     private Tabs tabs = new Tabs();
     private Div pages = new Div();
     Map<Tab, Component> tabsToPages = new HashMap<>();
+    Div mainDiv;
+    Tab mainTab;
 
     /**
      * Constructs a new instance.
@@ -141,13 +144,13 @@ public abstract class AbstractEditorDialog<T extends Serializable>
     }
 
     private void initFormLayout() {
-        Tab mainTab = new Tab("Main");
+        mainTab = new Tab("Main");
         formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1),
                 new FormLayout.ResponsiveStep("25em", 2));
-        Div div = new Div(formLayout);
-        div.addClassName("has-padding");
-        tabsToPages.put(mainTab, div);
-        Set<Component> pagesShown = Stream.of(div)
+        mainDiv = new Div(formLayout);
+        mainDiv.addClassName("has-padding");
+        tabsToPages.put(mainTab, mainDiv);
+        Set<Component> pagesShown = Stream.of(mainDiv)
                 .collect(Collectors.toSet());
 
         tabs.addSelectedChangeListener(event -> {
@@ -158,7 +161,7 @@ public abstract class AbstractEditorDialog<T extends Serializable>
             pagesShown.add(selectedPage);
         });
         tabs.add(mainTab);
-        pages.add(div);
+        pages.add(mainDiv);
         add(tabs);
         add(pages);
     }
@@ -180,13 +183,24 @@ public abstract class AbstractEditorDialog<T extends Serializable>
      * @param tabName The name to display on a new tab
      * @param tabContent The content to display on a new tab
      */
-    protected void addNewTab(String tabName, Div tabContent){
+    protected Tab addNewTab(String tabName, Div tabContent){
         Tab newTab = new Tab(tabName);
         tabs.add(newTab);
         tabContent.setVisible(false);
         tabContent.addClassName("has-padding");
         pages.add(tabContent);
         tabsToPages.put(newTab, tabContent);
+        return newTab;
+    }
+
+    protected void updateTab(Tab tab, Div tabContent){
+        tabs.setSelectedTab(mainTab);
+        tabContent.setVisible(false);
+        tabContent.addClassName("has-padding");
+        pages.removeAll();
+        pages.add(mainDiv);
+        pages.add(tabContent);
+        tabsToPages.replace(tab, tabContent);
     }
 
     /**
@@ -226,7 +240,7 @@ public abstract class AbstractEditorDialog<T extends Serializable>
      * @param operation
      *            The operation being performed on the item
      */
-    public final void open(T item, Operation operation) {
+    public void open(T item, Operation operation) {
         currentItem = item;
         titleField.setText(operation.getNameInTitle() + " " + itemType);
         if (registrationForSave != null) {

@@ -7,6 +7,7 @@ import com.pw.ordermanager.ui.components.ProductManager;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.validator.DateRangeValidator;
@@ -24,6 +25,8 @@ public class OrderEditorDialog extends AbstractEditorDialog<Order> {
     private ComboBox<OrderStatus> orderStatusComboBox = new ComboBox<>();
     private ProductManager productManager;
     private DatePicker datePicker = new DatePicker();
+    private volatile boolean productManagerAlreadyAdded = false;
+    private Tab orderingTab;
 
     public OrderEditorDialog(BiConsumer<Order, Operation> saveHandler,
                               Consumer<Order> deleteHandler) {
@@ -33,12 +36,24 @@ public class OrderEditorDialog extends AbstractEditorDialog<Order> {
         createDescription();
         createOrderStatus();
         createDatePicker();
-        createProductManager();
     }
 
-    private void createProductManager() {
-        productManager = new ProductManager();
-        addNewTab("Ordering", new Div(productManager));
+    private void createProductManager(Order item) {
+        if(!productManagerAlreadyAdded){
+            productManager = new ProductManager(item);
+            orderingTab = addNewTab("Ordering", new Div(productManager));
+            productManagerAlreadyAdded = true;
+        } else{
+            productManager = new ProductManager(item);
+            updateTab(orderingTab, new Div(productManager));
+           // productManager.setCurrentItem(item);
+        }
+    }
+
+    @Override
+    public final void open(Order item, Operation operation) {
+        createProductManager(item);
+        super.open(item, operation);
     }
 
     private void createDatePicker() {
@@ -55,7 +70,7 @@ public class OrderEditorDialog extends AbstractEditorDialog<Order> {
                 .withValidator(new DateRangeValidator(
                         "The date should be neither Before Christ nor in the future.",
                         LocalDate.of(1, 1, 1), LocalDate.now()))
-                .bind(Order::getDate, Order::setDate);
+                .bind(Order::getOrderDate, Order::setOrderDate);
     }
 
     private void createOrderStatus() {
@@ -66,7 +81,7 @@ public class OrderEditorDialog extends AbstractEditorDialog<Order> {
         getFormLayout().add(orderStatusComboBox);
 
         getBinder().forField(orderStatusComboBox)
-                .bind(Order::getOrderStatus, Order::setOrderStatus);
+                .bind(Order::getStatus, Order::setStatus);
     }
 
     private void createDescription() {

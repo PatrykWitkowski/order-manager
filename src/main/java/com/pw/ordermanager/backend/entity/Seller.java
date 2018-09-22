@@ -1,15 +1,18 @@
 package com.pw.ordermanager.backend.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 @Data
 @Entity
 @Table(name = "sellers")
-public class Seller {
+@EqualsAndHashCode(exclude={"owner", "order"})
+public class Seller implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

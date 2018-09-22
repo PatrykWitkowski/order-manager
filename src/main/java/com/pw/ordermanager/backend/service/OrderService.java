@@ -1,6 +1,7 @@
 package com.pw.ordermanager.backend.service;
 
 import com.pw.ordermanager.backend.entity.Order;
+import com.pw.ordermanager.backend.entity.User;
 import lombok.NonNull;
 
 import java.io.Serializable;
@@ -12,5 +13,7 @@ public interface OrderService extends Serializable {
 
     void deleteOrder(@NonNull Order order);
 
-    List<Order> findOrders(String value);
+    List<Order> findOrders(User user, String value);
+
+    Order findOrderById(Long id);
 }
