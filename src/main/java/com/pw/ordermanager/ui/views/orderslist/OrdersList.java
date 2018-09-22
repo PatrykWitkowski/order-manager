@@ -1,9 +1,6 @@
 package com.pw.ordermanager.ui.views.orderslist;
 
-import com.pw.ordermanager.backend.entity.Order;
-import com.pw.ordermanager.backend.entity.Product;
-import com.pw.ordermanager.backend.entity.Seller;
-import com.pw.ordermanager.backend.entity.User;
+import com.pw.ordermanager.backend.entity.*;
 import com.pw.ordermanager.backend.jpa.SellerRepository;
 import com.pw.ordermanager.backend.service.OrderService;
 import com.pw.ordermanager.backend.service.OrderedProductService;
@@ -40,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.annotation.PostConstruct;
 import javax.persistence.Entity;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Displays the list of available orders, with a search filter as well as
@@ -108,7 +106,12 @@ public class OrdersList extends PolymerTemplate<OrdersList.OrdersModel> implemen
                            AbstractEditorDialog.Operation operation) {
         order.setTotalPrice(order.getOrderedProduct().stream().map(p -> p.getPrice())
                 .mapToDouble(Double::doubleValue).sum());
+
         orderService.saveOrder(order);
+        final List<OrderedProduct> orderedProductServiceByOrder = orderedProductService.findByOrder(order);
+        orderedProductServiceByOrder.stream()
+                .filter(op -> !order.getOrderedProduct().contains(op))
+                .forEach(op -> orderedProductService.delete(op));
         order.getOrderedProduct().forEach(orderedProduct -> orderedProductService.save(orderedProduct));
         updateList();
         Notification.show(

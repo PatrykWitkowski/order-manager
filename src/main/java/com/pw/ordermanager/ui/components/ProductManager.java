@@ -112,7 +112,9 @@ public class ProductManager extends Component implements HasComponents {
         deleteProduct.getElement().setAttribute("theme", "error");
         deleteProduct.setEnabled(false);
         deleteProduct.addClickListener(e -> {
-            final List<OrderedProduct> orderedProducts = getCurrentOrder().getOrderedProduct().stream().filter(item -> !selectedProducts.getSelectedItems().contains(item)).collect(Collectors.toList());
+            final List<OrderedProduct> orderedProducts = getCurrentOrder().getOrderedProduct().stream()
+                    .filter(item -> !selectedProducts.getSelectedItems().contains(item))
+                    .collect(Collectors.toList());
             getCurrentOrder().setOrderedProduct(orderedProducts);
             selectedProducts.setItems(orderedProducts);
             calculateTotalPrice(prices);

@@ -1,5 +1,6 @@
 package com.pw.ordermanager.backend.service.impl;
 
+import com.pw.ordermanager.backend.entity.Order;
 import com.pw.ordermanager.backend.entity.OrderedProduct;
 import com.pw.ordermanager.backend.jpa.OrderedProductRepository;
 import com.pw.ordermanager.backend.service.OrderedProductService;
@@ -47,5 +48,10 @@ public class OrderedProductServiceImpl implements OrderedProductService {
     public boolean checkIfOrderedProductIsUnique(List<OrderedProduct> products, OrderedProduct orderedProduct) {
         return products.stream()
                 .noneMatch(p -> Objects.equals(p, orderedProduct));
+    }
+
+    @Override
+    public List<OrderedProduct> findByOrder(Order order) {
+        return orderedProductRepository.findByOrder(order);
     }
 }
