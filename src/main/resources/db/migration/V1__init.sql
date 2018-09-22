@@ -39,7 +39,7 @@ CREATE TABLE orders(
     order_id bigint NOT NULL AUTO_INCREMENT,
     user_id bigint NOT NULL,
     title varchar(100) NOT NULL,
-    status varchar(8) NOT NULL,
+    status varchar(10) NOT NULL,
     order_date date NOT NULL,
     description varchar(255),
     total_price double,

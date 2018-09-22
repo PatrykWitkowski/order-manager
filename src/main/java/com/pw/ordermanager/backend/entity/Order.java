@@ -35,7 +35,7 @@ public class Order implements Serializable {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(length = 8)
+    @Column(length = 10)
     private OrderStatus status;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
