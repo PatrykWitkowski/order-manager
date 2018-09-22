@@ -30,10 +30,10 @@ public class Order implements Serializable {
     @JoinColumn(name="user_id")
     private User owner;
 
-    //@NotBlank
+    @NotBlank
     private String title;
 
-    //@NotBlank
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(length = 8)
     private OrderStatus status;
