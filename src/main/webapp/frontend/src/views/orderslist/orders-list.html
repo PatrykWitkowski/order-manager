@@ -225,7 +225,7 @@
                 <template is="dom-repeat" items="[[orders]]">
                     <div class="order">
                         <div class="order__rating">
-                            <p class="order__score">[[item.totalPrice]] $</p>
+                            <p class="order__score">{{_setTwoNumberDecimal(item.totalPrice)}} $</p>
                             <p class="order__count">
                                 [[item.counter]]
                                 <span>ordered before</span>
@@ -263,6 +263,10 @@
 
             _isEmpty(array) {
                 return array.length == 0;
+            }
+
+            _setTwoNumberDecimal(el) {
+                return parseFloat(el).toFixed(2);
             }
         }
         customElements.define(OrderListElement.is, OrderListElement);

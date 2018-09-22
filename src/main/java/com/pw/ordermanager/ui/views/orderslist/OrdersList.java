@@ -104,8 +104,9 @@ public class OrdersList extends PolymerTemplate<OrdersList.OrdersModel> implemen
 
     public void saveUpdate(Order order,
                            AbstractEditorDialog.Operation operation) {
-        order.setTotalPrice(order.getOrderedProduct().stream().map(p -> p.getPrice())
-                .mapToDouble(Double::doubleValue).sum());
+        final double totalPrice = order.getOrderedProduct().stream().map(p -> p.getPrice())
+                .mapToDouble(Double::doubleValue).sum();
+        order.setTotalPrice(totalPrice);
 
         orderService.saveOrder(order);
         final List<OrderedProduct> orderedProductServiceByOrder = orderedProductService.findByOrder(order);
