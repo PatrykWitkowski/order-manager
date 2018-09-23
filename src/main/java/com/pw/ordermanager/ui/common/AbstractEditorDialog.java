@@ -112,9 +112,9 @@ public abstract class AbstractEditorDialog<T extends Serializable>
 
     private Tabs tabs = new Tabs();
     private Div pages = new Div();
-    Map<Tab, Component> tabsToPages = new HashMap<>();
-    Div mainDiv;
-    Tab mainTab;
+    private Map<Tab, Component> tabsToPages = new HashMap<>();
+    private Div mainDiv;
+    private Tab mainTab;
 
     /**
      * Constructs a new instance.
@@ -193,12 +193,17 @@ public abstract class AbstractEditorDialog<T extends Serializable>
         return newTab;
     }
 
+    /**
+     * Update a tab.
+     *
+     * @param tab The tab to update
+     * @param tabContent The content to display on a tab
+     */
     protected void updateTab(Tab tab, Div tabContent){
         tabs.setSelectedTab(mainTab);
         tabContent.setVisible(false);
         tabContent.addClassName("has-padding");
-        pages.removeAll();
-        pages.add(mainDiv);
+        pages.remove(tabsToPages.get(tab));
         pages.add(tabContent);
         tabsToPages.replace(tab, tabContent);
     }
