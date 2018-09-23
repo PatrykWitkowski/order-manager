@@ -32,20 +32,27 @@ public class OrderServiceImpl implements OrderService {
         List<Order> orders = orderRepository.findByOwner(user);
 
         if(!StringUtils.isEmpty(value)){
-            // by name
-            List<Order> filteredOrders = orders.stream()
-                    .filter(order -> StringUtils.containsIgnoreCase(order.getTitle(), value))
-                    .collect(Collectors.toList());
-            // by status
-            if(filteredOrders.isEmpty()){
-                filteredOrders = orders.stream()
-                        .filter(order -> StringUtils.containsIgnoreCase(order.getStatus().toString(), value))
-                        .collect(Collectors.toList());
-            }
+            List<Order> filteredOrders = filterOrdersByTitle(value, orders);
+            filteredOrders = filterOrdersByStatus(value, orders, filteredOrders);
             orders = filteredOrders;
         }
 
         return orders;
+    }
+
+    private List<Order> filterOrdersByStatus(String value, List<Order> orders, List<Order> filteredOrders) {
+        if(filteredOrders.isEmpty()){
+            filteredOrders = orders.stream()
+                    .filter(order -> StringUtils.containsIgnoreCase(order.getStatus().toString(), value))
+                    .collect(Collectors.toList());
+        }
+        return filteredOrders;
+    }
+
+    private List<Order> filterOrdersByTitle(String value, List<Order> orders) {
+        return orders.stream()
+                        .filter(order -> StringUtils.containsIgnoreCase(order.getTitle(), value))
+                        .collect(Collectors.toList());
     }
 
     @Override

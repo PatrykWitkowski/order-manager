@@ -1,13 +1,9 @@
 package com.pw.ordermanager.ui.components;
 
-import com.pw.ordermanager.backend.entity.Order;
 import com.pw.ordermanager.backend.entity.Product;
 import com.pw.ordermanager.backend.entity.Seller;
 import com.pw.ordermanager.backend.entity.User;
-import com.pw.ordermanager.backend.service.ProductService;
-import com.pw.ordermanager.backend.service.SellerService;
-import com.pw.ordermanager.backend.service.impl.ProductServiceImpl;
-import com.pw.ordermanager.backend.service.impl.SellerServiceImpl;
+import com.pw.ordermanager.backend.support.ProductSupport;
 import com.pw.ordermanager.backend.utils.security.SecurityUtils;
 import com.pw.ordermanager.ui.common.AbstractSearchDialog;
 import com.vaadin.flow.component.Component;
@@ -21,19 +17,12 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import lombok.Getter;
-import org.hibernate.Hibernate;
-import org.hibernate.Session;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Tag("product-search-box")
 public class ProductSearchBox extends Component implements HasComponents, HasSize {
-
-    private ProductService productService;
-    private SellerService sellerService;
 
     @Getter
     private ComboBox<Product> productSearchField;
@@ -42,10 +31,6 @@ public class ProductSearchBox extends Component implements HasComponents, HasSiz
     private Button searchButton;
 
     public ProductSearchBox(AbstractSearchDialog dialog) {
-        //cannot autowired because it is in component which is created by new
-        productService = ProductServiceImpl.getInstance();
-        sellerService = SellerServiceImpl.getInstance();
-
         productSearchField = new ComboBox<>("Product");
         sellerSearchField = new ComboBox<>("Seller");
         searchButton = new Button(new Icon(VaadinIcon.SEARCH));
@@ -78,7 +63,7 @@ public class ProductSearchBox extends Component implements HasComponents, HasSiz
         productSearchField.addFocusListener(e -> {
             final User currentOrderOwner = SecurityUtils.getCurrentUser().getUser();
                 if(sellerSearchField.getValue() != null){
-                    productSearchField.setItems(productService.findProductsBySeller(currentOrderOwner.getProducts(), sellerSearchField.getValue()));
+                    productSearchField.setItems(ProductSupport.findProductsBySeller(currentOrderOwner.getProducts(), sellerSearchField.getValue()));
                 } else {
                     productSearchField.setItems(currentOrderOwner.getProducts());
                 }

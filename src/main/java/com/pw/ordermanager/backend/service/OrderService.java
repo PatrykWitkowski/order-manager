@@ -13,7 +13,7 @@ public interface OrderService extends Serializable {
 
     void deleteOrder(@NonNull Order order);
 
-    List<Order> findOrders(User user, String value);
+    List<Order> findOrders(@NonNull User user, String value);
 
-    Order findOrderById(Long id);
+    Order findOrderById(@NonNull Long id);
 }

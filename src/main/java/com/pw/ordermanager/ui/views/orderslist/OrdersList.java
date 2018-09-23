@@ -1,10 +1,10 @@
 package com.pw.ordermanager.ui.views.orderslist;
 
-import com.pw.ordermanager.backend.entity.*;
-import com.pw.ordermanager.backend.jpa.SellerRepository;
+import com.pw.ordermanager.backend.entity.Order;
+import com.pw.ordermanager.backend.entity.OrderedProduct;
+import com.pw.ordermanager.backend.entity.User;
 import com.pw.ordermanager.backend.service.OrderService;
 import com.pw.ordermanager.backend.service.OrderedProductService;
-import com.pw.ordermanager.backend.service.SellerService;
 import com.pw.ordermanager.backend.utils.security.SecurityUtils;
 import com.pw.ordermanager.ui.MainLayout;
 import com.pw.ordermanager.ui.common.AbstractEditorDialog;
@@ -17,7 +17,6 @@ import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.polymertemplate.EventHandler;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.ModelItem;
@@ -31,13 +30,10 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.templatemodel.Encode;
 import com.vaadin.flow.templatemodel.Include;
 import com.vaadin.flow.templatemodel.TemplateModel;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.Entity;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 
 /**
  * Displays the list of available orders, with a search filter as well as

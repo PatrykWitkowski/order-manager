@@ -4,9 +4,7 @@ import com.pw.ordermanager.backend.entity.Order;
 import com.pw.ordermanager.backend.entity.OrderedProduct;
 import com.pw.ordermanager.backend.entity.Product;
 import com.pw.ordermanager.backend.entity.Seller;
-import com.pw.ordermanager.backend.service.OrderedProductService;
-import com.pw.ordermanager.backend.service.SellerService;
-import com.pw.ordermanager.backend.service.impl.OrderedProductServiceImpl;
+import com.pw.ordermanager.backend.support.OrderedProductSupport;
 import com.pw.ordermanager.ui.views.dialogs.ProductSearchDialog;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasComponents;
@@ -20,13 +18,10 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Tag("product-manager")
 public class ProductManager extends Component implements HasComponents {
-
-    private OrderedProductService orderedProductService;
 
     private ProductSearchBox productLookup;
     private Grid<OrderedProduct> selectedProducts = new Grid<>();
@@ -37,8 +32,6 @@ public class ProductManager extends Component implements HasComponents {
 
     public ProductManager(Order currentItem){
         currentOrder = currentItem;
-        //cannot autowired because it is in component which is created by new
-        orderedProductService = OrderedProductServiceImpl.getInstance();
 
         productLookup = new ProductSearchBox(new ProductSearchDialog());
 
@@ -94,7 +87,7 @@ public class ProductManager extends Component implements HasComponents {
                 newOrderedProduct.setAmount(1L);
                 newOrderedProduct.setPrice(productValue.getPrices().get(sellerValue));
                 newOrderedProduct.setOrder(getCurrentOrder());
-                if(orderedProductService.checkIfOrderedProductIsUnique(getCurrentOrder().getOrderedProduct(), newOrderedProduct)){
+                if(OrderedProductSupport.checkIfOrderedProductIsUnique(getCurrentOrder().getOrderedProduct(), newOrderedProduct)){
                     //orderedProductService.save(newOrderedProduct);
                     getCurrentOrder().getOrderedProduct().add(newOrderedProduct);
                     selectedProducts.setItems(getCurrentOrder().getOrderedProduct());
