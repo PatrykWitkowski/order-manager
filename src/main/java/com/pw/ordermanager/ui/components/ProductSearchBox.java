@@ -49,9 +49,7 @@ public class ProductSearchBox extends Component implements HasComponents, HasSiz
 
     private void createSearchButton(AbstractSearchDialog dialog) {
         searchButton = new Button(new Icon(VaadinIcon.SEARCH));
-        searchButton.addClickListener(e -> {
-            dialog.open();
-        });
+        searchButton.addClickListener(e -> dialog.open());
     }
 
     private void sellerSearchProductOnFocus() {

@@ -79,8 +79,6 @@ public class OrdersList extends PolymerTemplate<OrdersList.OrdersModel> implemen
     private OrderEditorDialog orderForm = new OrderEditorDialog(
             this::saveUpdate, this::deleteUpdate);
 
-    public OrdersList() { }
-
     /**
      * Needs to be done here, because autowireds field are injected after constructor
      */

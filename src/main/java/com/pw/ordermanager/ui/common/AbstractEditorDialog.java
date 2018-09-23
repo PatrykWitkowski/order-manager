@@ -60,6 +60,8 @@ import java.util.stream.Stream;
 public abstract class AbstractEditorDialog<T extends Serializable>
         extends Dialog {
 
+    public static final String HAS_PADDING_CLASS_NAME = "has-padding";
+
     /**
      * The operations supported by this dialog. Delete is enabled when editing
      * an already existing item.
@@ -113,7 +115,6 @@ public abstract class AbstractEditorDialog<T extends Serializable>
     private Tabs tabs = new Tabs();
     private Div pages = new Div();
     private Map<Tab, Component> tabsToPages = new HashMap<>();
-    private Div mainDiv;
     private Tab mainTab;
 
     /**
@@ -147,8 +148,8 @@ public abstract class AbstractEditorDialog<T extends Serializable>
         mainTab = new Tab("Main");
         formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1),
                 new FormLayout.ResponsiveStep("25em", 2));
-        mainDiv = new Div(formLayout);
-        mainDiv.addClassName("has-padding");
+        Div mainDiv = new Div(formLayout);
+        mainDiv.addClassName(HAS_PADDING_CLASS_NAME);
         tabsToPages.put(mainTab, mainDiv);
         Set<Component> pagesShown = Stream.of(mainDiv)
                 .collect(Collectors.toSet());
@@ -187,7 +188,7 @@ public abstract class AbstractEditorDialog<T extends Serializable>
         Tab newTab = new Tab(tabName);
         tabs.add(newTab);
         tabContent.setVisible(false);
-        tabContent.addClassName("has-padding");
+        tabContent.addClassName(HAS_PADDING_CLASS_NAME);
         pages.add(tabContent);
         tabsToPages.put(newTab, tabContent);
         return newTab;
@@ -202,7 +203,7 @@ public abstract class AbstractEditorDialog<T extends Serializable>
     protected void updateTab(Tab tab, Div tabContent){
         tabs.setSelectedTab(mainTab);
         tabContent.setVisible(false);
-        tabContent.addClassName("has-padding");
+        tabContent.addClassName(HAS_PADDING_CLASS_NAME);
         pages.remove(tabsToPages.get(tab));
         pages.add(tabContent);
         tabsToPages.replace(tab, tabContent);
@@ -266,7 +267,7 @@ public abstract class AbstractEditorDialog<T extends Serializable>
             itemSaver.accept(currentItem, operation);
             close();
         } else {
-            BinderValidationStatus<T> status = binder.validate();
+            binder.validate();
         }
     }
 

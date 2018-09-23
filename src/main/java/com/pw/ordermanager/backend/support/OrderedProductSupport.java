@@ -8,6 +8,8 @@ import java.util.Objects;
 
 public class OrderedProductSupport {
 
+    private OrderedProductSupport() {}
+
     public static boolean checkIfOrderedProductIsUnique(List<OrderedProduct> products, OrderedProduct orderedProduct) {
         return products.stream()
                 .noneMatch(p -> Objects.equals(p, orderedProduct));

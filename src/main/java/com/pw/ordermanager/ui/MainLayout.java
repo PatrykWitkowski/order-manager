@@ -53,9 +53,8 @@ public class MainLayout extends Div
     }
 
     private void finishSession() {
-        VaadinService.getCurrent().addSessionDestroyListener((SessionDestroyEvent sessionDestroyEvent) -> {
-            SecurityUtils.revokeAccess(sessionDestroyEvent.getSession().getCsrfToken());
-        });
+        VaadinService.getCurrent().addSessionDestroyListener((SessionDestroyEvent sessionDestroyEvent) ->
+                SecurityUtils.revokeAccess(sessionDestroyEvent.getSession().getCsrfToken()));
     }
 
     private void onLogout() {

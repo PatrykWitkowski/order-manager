@@ -23,7 +23,6 @@ public class OrderEditorDialog extends AbstractEditorDialog<Order> {
     private TextField orderTitle = new TextField();
     private TextArea description = new TextArea();
     private ComboBox<OrderStatus> orderStatusComboBox = new ComboBox<>();
-    private ProductManager productManager;
     private DatePicker datePicker = new DatePicker();
     private volatile boolean productManagerAlreadyAdded = false;
     private Tab orderingTab;
@@ -39,6 +38,7 @@ public class OrderEditorDialog extends AbstractEditorDialog<Order> {
     }
 
     private void createProductManager(Order item) {
+        ProductManager productManager;
         if(!productManagerAlreadyAdded){
             productManager = new ProductManager(item);
             orderingTab = addNewTab("Ordering", new Div(productManager));

@@ -35,6 +35,8 @@ import java.util.function.Consumer;
 class ConfirmationDialog<T extends Serializable>
         extends Dialog {
 
+    public static final String THEME = "theme";
+    public static final String TERTIARY = "tertiary";
     private final H3 titleField = new H3();
     private final Div messageLabel = new Div();
     private final Div extraMessageLabel = new Div();
@@ -51,10 +53,10 @@ class ConfirmationDialog<T extends Serializable>
         setCloseOnOutsideClick(false);
 
         confirmButton.addClickListener(e -> close());
-        confirmButton.getElement().setAttribute("theme", "tertiary");
+        confirmButton.getElement().setAttribute(THEME, TERTIARY);
         confirmButton.setAutofocus(true);
         cancelButton.addClickListener(e -> close());
-        cancelButton.getElement().setAttribute("theme", "tertiary");
+        cancelButton.getElement().setAttribute(THEME, TERTIARY);
 
         HorizontalLayout buttonBar = new HorizontalLayout(confirmButton,
                 cancelButton);
@@ -116,7 +118,7 @@ class ConfirmationDialog<T extends Serializable>
             }
         });
         if (isDisruptive) {
-            confirmButton.getElement().setAttribute("theme", "tertiary error");
+            confirmButton.getElement().setAttribute(THEME, "tertiary error");
         }
         open();
     }
