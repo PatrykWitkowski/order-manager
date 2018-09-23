@@ -46,7 +46,6 @@ public class OrderEditorDialog extends AbstractEditorDialog<Order> {
         } else{
             productManager = new ProductManager(item);
             updateTab(orderingTab, new Div(productManager));
-           // productManager.setCurrentItem(item);
         }
     }
 

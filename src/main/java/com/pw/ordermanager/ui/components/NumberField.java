@@ -1,6 +1,7 @@
 package com.pw.ordermanager.ui.components;
 
 import com.pw.ordermanager.backend.entity.OrderedProduct;
+import com.pw.ordermanager.backend.support.OrderedProductSupport;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
@@ -14,35 +15,44 @@ import com.vaadin.flow.function.ValueProvider;
 
 public class NumberField extends TextField implements ValueProvider {
 
+    private static final String NUMBER_FIELD_PATTERN = "[0-9]*";
+
     public NumberField(OrderedProduct orderedProduct, Grid<OrderedProduct> selectedProducts){
-        setValue(orderedProduct.getAmount().toString());
-        setPattern("[0-9]*");
-        setPreventInvalidInput(true);
-
+        init(orderedProduct);
         numberFieldOnChange(orderedProduct, selectedProducts);
+        addUpDownComponent();
+    }
 
+    private void init(OrderedProduct orderedProduct) {
+        setValue(orderedProduct.getAmount().toString());
+        setPattern(NUMBER_FIELD_PATTERN);
+        setPreventInvalidInput(true);
+        setWidth("7em");
+    }
+
+    private void addUpDownComponent() {
         UpButton up = createUpButton();
         DownButton down = createDownButton();
-
         VerticalLayout upAndDown = new VerticalLayout(up, down);
         upAndDown.setBoxSizing(BoxSizing.CONTENT_BOX);
         upAndDown.setPadding(false);
-
         setSuffixComponent(new Span(upAndDown));
-        setWidth("7em");
     }
 
     private void numberFieldOnChange(OrderedProduct orderedProduct, Grid<OrderedProduct> selectedProducts) {
         addValueChangeListener(e -> {
-            Double newPrice = orderedProduct.getProduct()
-                    .getPrices()
-                    .get(orderedProduct.getSeller()) * Long.parseLong(getValue());
-            orderedProduct.setPrice(newPrice);
-            orderedProduct.setAmount(Long.parseLong(getValue()));
-
+            calculateNewPrice(orderedProduct);
             ListDataProvider<OrderedProduct> dataProvider = updateGrid(selectedProducts);
             updateTotalPrice(selectedProducts, dataProvider);
         });
+    }
+
+    private void calculateNewPrice(OrderedProduct orderedProduct) {
+        Double newPrice = orderedProduct.getProduct()
+                .getPrices()
+                .get(orderedProduct.getSeller()) * Long.parseLong(getValue());
+        orderedProduct.setPrice(newPrice);
+        orderedProduct.setAmount(Long.parseLong(getValue()));
     }
 
     private ListDataProvider<OrderedProduct> updateGrid(Grid<OrderedProduct> selectedProducts) {
@@ -53,14 +63,12 @@ public class NumberField extends TextField implements ValueProvider {
     }
 
     private void updateTotalPrice(Grid<OrderedProduct> selectedProducts, ListDataProvider<OrderedProduct> dataProvider) {
-        double totalPrice = dataProvider.getItems().stream()
-                .map(OrderedProduct::getPrice)
-                .mapToDouble(Double::doubleValue)
-                .sum();
-        String totalPriceText = String.format("%.2f", totalPrice);
-        selectedProducts.getFooterRows().stream().findFirst().ifPresent(footerRow -> {
-            footerRow.getCell(selectedProducts.getColumnByKey("priceColumnKey")).setText("Total: " + totalPriceText);
-        });
+        double totalPrice = OrderedProductSupport.calculateTotalPrice(dataProvider.getItems());
+        String totalPriceText = OrderedProductSupport.priceFormat(totalPrice);
+        selectedProducts.getFooterRows().stream()
+                .findFirst()
+                .ifPresent(footerRow -> footerRow.getCell(selectedProducts.getColumnByKey("priceColumnKey"))
+                        .setText("Total: " + totalPriceText));
     }
 
     private DownButton createDownButton() {

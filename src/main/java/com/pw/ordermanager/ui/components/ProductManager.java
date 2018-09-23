@@ -16,6 +16,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,11 +29,11 @@ public class ProductManager extends Component implements HasComponents {
     private Button addProduct = new Button("Add");
     private Button deleteProduct = new Button("Delete");
     private Column<OrderedProduct> prices;
+    @Getter
     private Order currentOrder;
 
     public ProductManager(Order currentItem){
         currentOrder = currentItem;
-
         productLookup = new ProductSearchBox(new ProductSearchDialog());
 
         createGrid();
@@ -72,23 +73,17 @@ public class ProductManager extends Component implements HasComponents {
         selectedProducts.addColumn(o -> o.getProduct().getName()).setHeader("Product");
         selectedProducts.addColumn(o -> o.getSeller().getName()).setHeader("Seller");
         selectedProducts.addComponentColumn(o -> new NumberField(o, selectedProducts)).setHeader("Amount");
-        prices = selectedProducts.addColumn(o -> formatToCurrencyPrecision(o.getPrice())).setHeader("Price").setKey("priceColumnKey");
+        prices = selectedProducts.addColumn(o -> OrderedProductSupport.priceFormat(o.getPrice())).setHeader("Price")
+                .setKey("priceColumnKey");
     }
 
     private void createAddProduct() {
         addProduct.getElement().setAttribute("theme", "primary");
         addProduct.addClickListener(e -> {
             if(productLookup.isFilled()){
-                OrderedProduct newOrderedProduct= new OrderedProduct();
-                final Product productValue = productLookup.getProductSearchField().getValue();
-                final Seller sellerValue = productLookup.getSellerSearchField().getValue();
-                newOrderedProduct.setProduct(productValue);
-                newOrderedProduct.setSeller(sellerValue);
-                newOrderedProduct.setAmount(1L);
-                newOrderedProduct.setPrice(productValue.getPrices().get(sellerValue));
-                newOrderedProduct.setOrder(getCurrentOrder());
-                if(OrderedProductSupport.checkIfOrderedProductIsUnique(getCurrentOrder().getOrderedProduct(), newOrderedProduct)){
-                    //orderedProductService.save(newOrderedProduct);
+                OrderedProduct newOrderedProduct = createNewOrderedProduct();
+                if(OrderedProductSupport.checkIfOrderedProductIsUnique(getCurrentOrder().getOrderedProduct(),
+                        newOrderedProduct)){
                     getCurrentOrder().getOrderedProduct().add(newOrderedProduct);
                     selectedProducts.setItems(getCurrentOrder().getOrderedProduct());
                     calculateTotalPrice(prices);
@@ -99,6 +94,18 @@ public class ProductManager extends Component implements HasComponents {
                 Notification.show("You need to fill a product and a seller fields.", 4000, Notification.Position.MIDDLE);
             }
         });
+    }
+
+    private OrderedProduct createNewOrderedProduct() {
+        OrderedProduct newOrderedProduct= new OrderedProduct();
+        final Product productValue = productLookup.getProductSearchField().getValue();
+        final Seller sellerValue = productLookup.getSellerSearchField().getValue();
+        newOrderedProduct.setProduct(productValue);
+        newOrderedProduct.setSeller(sellerValue);
+        newOrderedProduct.setAmount(1L);
+        newOrderedProduct.setPrice(productValue.getPrices().get(sellerValue));
+        newOrderedProduct.setOrder(getCurrentOrder());
+        return newOrderedProduct;
     }
 
     private void createDeleteProduct() {
@@ -117,30 +124,15 @@ public class ProductManager extends Component implements HasComponents {
     private void calculateTotalPrice(Column<OrderedProduct> prices) {
         ListDataProvider<OrderedProduct> dataProvider
                 = (ListDataProvider<OrderedProduct>)selectedProducts.getDataProvider();
-        double totalPrice = dataProvider.getItems().stream()
-                .map(OrderedProduct::getPrice)
-                .mapToDouble(Double::doubleValue)
-                .sum();
+        double totalPrice = OrderedProductSupport.calculateTotalPrice(dataProvider.getItems());
         getCurrentOrder().setTotalPrice(totalPrice);
-        String totalPriceText = formatToCurrencyPrecision(totalPrice);
+        String totalPriceText = OrderedProductSupport.priceFormat(totalPrice);
         if(selectedProducts.getFooterRows().isEmpty()){
             selectedProducts.appendFooterRow().getCell(prices).setText("Total: " + totalPriceText);
         } else {
-            selectedProducts.getFooterRows().stream().findFirst().ifPresent(footer ->{
-                footer.getCell(selectedProducts.getColumnByKey("priceColumnKey")).setText("Total: " + totalPriceText);
-            });
+            selectedProducts.getFooterRows().stream().findFirst().ifPresent(footer ->
+                    footer.getCell(selectedProducts.getColumnByKey("priceColumnKey"))
+                            .setText("Total: " + totalPriceText));
         }
-    }
-
-    private String formatToCurrencyPrecision(double totalPrice) {
-        return String.format("%.2f", totalPrice);
-    }
-
-    public void setCurrentItem(Order item) {
-        this.currentOrder = item;
-    }
-
-    private Order getCurrentOrder(){
-        return currentOrder;
     }
 }

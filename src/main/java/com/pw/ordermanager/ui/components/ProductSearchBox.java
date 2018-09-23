@@ -18,9 +18,6 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import lombok.Getter;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Tag("product-search-box")
 public class ProductSearchBox extends Component implements HasComponents, HasSize {
 
@@ -31,21 +28,30 @@ public class ProductSearchBox extends Component implements HasComponents, HasSiz
     private Button searchButton;
 
     public ProductSearchBox(AbstractSearchDialog dialog) {
-        productSearchField = new ComboBox<>("Product");
-        sellerSearchField = new ComboBox<>("Seller");
-        searchButton = new Button(new Icon(VaadinIcon.SEARCH));
-
-        searchButton.addClickListener(e -> {
-            initDialog(dialog);
-            dialog.open();
-        });
-
-        productSearchFieldOnFocus();
-        sellerSearchProductOnFocus();
+        createProductSearchField();
+        createSellerSearchField();
+        createSearchButton(dialog);
 
         HorizontalLayout upperSearchPanel = new HorizontalLayout(productSearchField, searchButton);
         upperSearchPanel.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.END);
         add(upperSearchPanel, sellerSearchField);
+    }
+
+    private void createSellerSearchField() {
+        sellerSearchField = new ComboBox<>("Seller");
+        sellerSearchProductOnFocus();
+    }
+
+    private void createProductSearchField() {
+        productSearchField = new ComboBox<>("Product");
+        productSearchFieldOnFocus();
+    }
+
+    private void createSearchButton(AbstractSearchDialog dialog) {
+        searchButton = new Button(new Icon(VaadinIcon.SEARCH));
+        searchButton.addClickListener(e -> {
+            dialog.open();
+        });
     }
 
     private void sellerSearchProductOnFocus() {
@@ -63,7 +69,8 @@ public class ProductSearchBox extends Component implements HasComponents, HasSiz
         productSearchField.addFocusListener(e -> {
             final User currentOrderOwner = SecurityUtils.getCurrentUser().getUser();
                 if(sellerSearchField.getValue() != null){
-                    productSearchField.setItems(ProductSupport.findProductsBySeller(currentOrderOwner.getProducts(), sellerSearchField.getValue()));
+                    productSearchField.setItems(ProductSupport.findProductsBySeller(currentOrderOwner.getProducts(),
+                            sellerSearchField.getValue()));
                 } else {
                     productSearchField.setItems(currentOrderOwner.getProducts());
                 }
@@ -74,19 +81,4 @@ public class ProductSearchBox extends Component implements HasComponents, HasSiz
         return productSearchField.getValue() != null && sellerSearchField.getValue() != null;
     }
 
-    private void initDialog(AbstractSearchDialog dialog) {
-        Map<String, String> searchCriteria = new HashMap<>();
-        //searchCriteria.put(Product_.CODE, productSearchField.getValue().getCode());
-        //searchCriteria.put(Product_.NAME, productSearchField.getValue().getName());
-        //searchCriteria.put(Seller_.NAME, sellerSearchField.getValue().getName());
-        dialog.initSearchCriteria(searchCriteria);
-    }
-
-    public void setSearchDialogResult(String productCode, String sellerCode){
-        // find product by code and set
-        //productSearchField.setValue();
-
-        // find seller by code and set
-        //sellerSearchField.setValue();
-    }
 }

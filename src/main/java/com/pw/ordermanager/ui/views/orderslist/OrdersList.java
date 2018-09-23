@@ -2,9 +2,9 @@ package com.pw.ordermanager.ui.views.orderslist;
 
 import com.pw.ordermanager.backend.entity.Order;
 import com.pw.ordermanager.backend.entity.OrderedProduct;
-import com.pw.ordermanager.backend.entity.User;
 import com.pw.ordermanager.backend.service.OrderService;
 import com.pw.ordermanager.backend.service.OrderedProductService;
+import com.pw.ordermanager.backend.support.OrderedProductSupport;
 import com.pw.ordermanager.backend.utils.security.SecurityUtils;
 import com.pw.ordermanager.ui.MainLayout;
 import com.pw.ordermanager.ui.common.AbstractEditorDialog;
@@ -28,7 +28,7 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.templatemodel.Encode;
-import com.vaadin.flow.templatemodel.Include;
+import com.vaadin.flow.templatemodel.Exclude;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -59,7 +59,7 @@ public class OrdersList extends PolymerTemplate<OrdersList.OrdersModel> implemen
         @Encode(value = LocalDateToStringEncoder.class, path = "orderDate")
         @Encode(value = LongToStringEncoder.class, path = "counter")
         @Encode(value = LongToStringEncoder.class, path = "orderId")
-        @Include({"counter","totalPrice","title","status","orderDate","description","orderId"})
+        @Exclude({"owner", "orderedProduct"})
         void setOrders(List<Order> orders);
     }
 
@@ -91,38 +91,50 @@ public class OrdersList extends PolymerTemplate<OrdersList.OrdersModel> implemen
         search.setValueChangeMode(ValueChangeMode.EAGER);
 
         addOrder.addClickListener(e -> {
-            final User currentUser = SecurityUtils.getCurrentUser().getUser();
-            final Order newOrder = new Order(currentUser);
-            //currentUser.getOrders().add(newOrder);
+            final Order newOrder = new Order(SecurityUtils.getCurrentUser().getUser());
             openForm(newOrder, AbstractEditorDialog.Operation.ADD);
         });
     }
 
     public void saveUpdate(Order order,
                            AbstractEditorDialog.Operation operation) {
-        final double totalPrice = order.getOrderedProduct().stream().map(p -> p.getPrice())
-                .mapToDouble(Double::doubleValue).sum();
-        order.setTotalPrice(totalPrice);
-
-        orderService.saveOrder(order);
-        final List<OrderedProduct> orderedProductServiceByOrder = orderedProductService.findByOrder(order);
-        orderedProductServiceByOrder.stream()
-                .filter(op -> !order.getOrderedProduct().contains(op))
-                .forEach(op -> orderedProductService.delete(op));
-        order.getOrderedProduct().forEach(orderedProduct -> orderedProductService.save(orderedProduct));
+        updateOrder(order);
+        updateOrderedProduct(order);
         updateList();
         Notification.show(
                 "Order successfully " + operation.getNameInText() + "ed.",
                 3000, Notification.Position.BOTTOM_START);
     }
 
+    private void updateOrderedProduct(Order order) {
+        final List<OrderedProduct> orderedProductServiceByOrder = orderedProductService.findByOrder(order);
+        orderedProductServiceByOrder.stream()
+                .filter(op -> !order.getOrderedProduct().contains(op))
+                .forEach(op -> orderedProductService.delete(op));
+        order.getOrderedProduct().forEach(orderedProduct -> orderedProductService.save(orderedProduct));
+    }
+
+    private void updateOrder(Order order) {
+        final double totalPrice = OrderedProductSupport.calculateTotalPrice(order.getOrderedProduct());
+        order.setTotalPrice(totalPrice);
+        orderService.saveOrder(order);
+    }
+
     public void deleteUpdate(Order order) {
-        order.getOrderedProduct().forEach(orderedProduct -> orderedProductService.delete(orderedProduct));
-        order.setOrderedProduct(null);
-        orderService.deleteOrder(order);
+        deleteOrderedProduct(order);
+        deleteOrder(order);
         updateList();
         Notification.show("Order successfully deleted.", 3000,
                 Notification.Position.BOTTOM_START);
+    }
+
+    private void deleteOrder(Order order) {
+        order.setOrderedProduct(null);
+        orderService.deleteOrder(order);
+    }
+
+    private void deleteOrderedProduct(Order order) {
+        order.getOrderedProduct().forEach(orderedProduct -> orderedProductService.delete(orderedProduct));
     }
 
     private void updateList() {
@@ -141,8 +153,7 @@ public class OrdersList extends PolymerTemplate<OrdersList.OrdersModel> implemen
 
     @EventHandler
     private void edit(@ModelItem Order order) {
-        final Long orderId = order.getOrderId();
-        Order orderToEdit = orderService.findOrderById(orderId);
+        Order orderToEdit = orderService.findOrderById(order.getOrderId());
         openForm(orderToEdit, AbstractEditorDialog.Operation.EDIT);
     }
 
