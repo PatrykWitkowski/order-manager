@@ -78,7 +78,7 @@ public class OrderServiceTest {
 
     @Test
     public void shouldNotFindOrderByIdWhenNotExists(){
-        final Order result = testedService.findOrderById(3L);
+        final Order result = testedService.findOrderById(999L);
 
         assertThat(result, is(nullValue()));
     }

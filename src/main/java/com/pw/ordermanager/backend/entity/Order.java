@@ -1,10 +1,7 @@
 package com.pw.ordermanager.backend.entity;
 
 import com.pw.ordermanager.backend.common.OrderStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -22,6 +19,7 @@ import java.util.List;
 @EqualsAndHashCode(exclude="owner")
 @Builder
 @AllArgsConstructor
+@ToString(exclude = "owner")
 public class Order implements Serializable {
 
     @Id
