@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order,Long>, Serializable {
 
-    List<Order> findByOwner(User owenr);
+    List<Order> findByOwner(User owner);
 
     Order findByOrderId(Long ig);
 }
