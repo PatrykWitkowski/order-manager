@@ -1,6 +1,8 @@
 package com.pw.ordermanager.backend.entity;
 
 import com.pw.ordermanager.backend.common.OrderStatus;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.LazyCollection;
@@ -18,6 +20,8 @@ import java.util.List;
 @Entity
 @Table(name = "orders")
 @EqualsAndHashCode(exclude="owner")
+@Builder
+@AllArgsConstructor
 public class Order implements Serializable {
 
     @Id

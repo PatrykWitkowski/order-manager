@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface OrderService extends Serializable {
 
-    void saveOrder(@NonNull Order order);
+    Order saveOrder(@NonNull Order order);
 
     void deleteOrder(@NonNull Order order);
 

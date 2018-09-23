@@ -1,7 +1,6 @@
 package com.pw.ordermanager.backend.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -11,6 +10,9 @@ import java.io.Serializable;
 @Entity
 @Table(name = "ordered_products")
 @EqualsAndHashCode(exclude={"product", "seller", "order"})
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class OrderedProduct implements Serializable {
 
     @Id
