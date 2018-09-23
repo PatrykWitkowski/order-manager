@@ -18,15 +18,15 @@ public class OrderedProduct implements Serializable {
     private Long orderedProductId;
 
     @OneToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="PRODUCT_ID")
+    @JoinColumn(name="product_id")
     private Product product;
 
     @OneToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="SELLER_ID")
+    @JoinColumn(name="seller_id")
     private Seller seller;
 
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="ORDER_ID")
+    @JoinColumn(name="order_id")
     private Order order;
 
     @NotNull

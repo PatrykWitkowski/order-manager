@@ -63,8 +63,7 @@ public class Order implements Serializable {
     }
 
     public Order(User user) {
-        this.counter = 0L;
+        this();
         this.owner = user;
-        orderedProduct = new ArrayList<>();
     }
 }
