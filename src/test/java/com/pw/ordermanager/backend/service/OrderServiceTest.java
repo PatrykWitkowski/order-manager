@@ -70,7 +70,7 @@ public class OrderServiceTest {
 
     @Test
     public void shouldFindOrderByIdWhenExists(){
-        final Order result = testedService.findOrderById(1L);
+        final Order result = testedService.findOrderById(20180002L);
 
         assertThat(result.getTitle(), is(ORDER_TEST_TITLE));
         assertThat(result.getStatus(), is(OrderStatus.PLANNED));
