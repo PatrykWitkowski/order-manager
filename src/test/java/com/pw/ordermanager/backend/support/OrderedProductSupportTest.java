@@ -25,14 +25,14 @@ public class OrderedProductSupportTest {
     public void shouldFormatLongDoubleToPrice(){
         final String result = OrderedProductSupport.priceFormat(2.343545456436);
 
-        assertThat(result, is("2,34"));
+        assertThat(result, is("2.34"));
     }
 
     @Test
     public void shouldFormatZeroToPrice(){
         final String result = OrderedProductSupport.priceFormat(0);
 
-        assertThat(result, is("0,00"));
+        assertThat(result, is("0.00"));
     }
 
     @Test
