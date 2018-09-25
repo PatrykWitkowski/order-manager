@@ -6,7 +6,6 @@ import com.pw.ordermanager.backend.service.ProductService;
 import com.pw.ordermanager.backend.utils.security.SecurityUtils;
 import com.pw.ordermanager.ui.MainLayout;
 import com.pw.ordermanager.ui.common.AbstractEditorDialog;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
@@ -14,7 +13,6 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -28,7 +26,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import java.util.List;
 
 @Route(value = "products", layout = MainLayout.class)
@@ -69,7 +66,7 @@ public class ProductsList extends VerticalLayout implements BeforeEnterObserver 
         Button newButton = new Button("New product", new Icon("lumo", "plus"));
         newButton.getElement().setAttribute("theme", "primary");
         newButton.addClassName("view-toolbar__button");
-        newButton.addClickListener(e -> form.open(new Product(),
+        newButton.addClickListener(e -> form.open(new Product(SecurityUtils.getCurrentUser().getUser()),
                 AbstractEditorDialog.Operation.ADD));
 
         viewToolbar.add(searchField, newButton);
@@ -143,7 +140,7 @@ public class ProductsList extends VerticalLayout implements BeforeEnterObserver 
     private void deleteProduct(Product product) {
         productService.deleteProduct(product);
 
-        Notification.show("Category successfully deleted.", 3000, Notification.Position.BOTTOM_START);
+        Notification.show("Product successfully deleted.", 3000, Notification.Position.BOTTOM_START);
         updateView();
     }
 

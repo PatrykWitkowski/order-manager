@@ -28,7 +28,14 @@ public class Seller implements Serializable {
 
     @NotBlank
     @Column(unique = true)
+    private String nip;
+
+    @NotBlank
     private String name;
+
+    //convert to address class
+    @NotNull
+    private String address;
 
     private String description;
 

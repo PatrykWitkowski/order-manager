@@ -1,9 +1,11 @@
 package com.pw.ordermanager.ui.views.productslist;
 
 import com.pw.ordermanager.backend.entity.Product;
-import com.pw.ordermanager.backend.entity.Seller;
 import com.pw.ordermanager.ui.common.AbstractEditorDialog;
-import com.vaadin.flow.component.combobox.ComboBox;
+import com.pw.ordermanager.ui.components.SellerManager;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.validator.StringLengthValidator;
@@ -17,7 +19,9 @@ public class ProductEditorDialog extends AbstractEditorDialog<Product> {
     private TextField productType = new TextField();
     private TextArea description = new TextArea();
     private TextField productWebsiteUrl = new TextField();
-    private ComboBox<Seller> sellers = new ComboBox<>();
+    private volatile boolean productManagerAlreadyAdded = false;
+    private Tab sellerTab;
+    private SellerManager sellerManager;
 
     /**
      * Constructs a new instance.
@@ -33,10 +37,23 @@ public class ProductEditorDialog extends AbstractEditorDialog<Product> {
         createDescription();
         createType();
         createWebsite();
-        createSellersComboBox();
     }
 
-    private void createSellersComboBox() {
+    @Override
+    public final void open(Product item, Operation operation) {
+        createSellerManager(item);
+        super.open(item, operation);
+    }
+
+    private void createSellerManager(Product item) {
+        if(!productManagerAlreadyAdded){
+            sellerManager = new SellerManager(item);
+            sellerTab = addNewTab("Sellers", new Div(sellerManager));
+            productManagerAlreadyAdded = true;
+        } else{
+            sellerManager = new SellerManager(item);
+            updateTab(sellerTab, new Div(sellerManager));
+        }
     }
 
     private void createWebsite() {
@@ -84,5 +101,14 @@ public class ProductEditorDialog extends AbstractEditorDialog<Product> {
     protected void confirmDelete() {
         openConfirmationDialog("Delete product",
                 "Are you sure you want to delete the product: “" + getCurrentItem().getName() + "”?", "");
+    }
+
+    @Override
+    protected void saveClicked(Operation operation) {
+        if(sellerManager.invalidDataInTable()){
+            Notification.show("Cannot save. Invalid data in table.", 4000, Notification.Position.MIDDLE);
+        } else {
+            super.saveClicked(operation);
+        }
     }
 }

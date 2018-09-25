@@ -255,7 +255,7 @@ public abstract class AbstractEditorDialog<T extends Serializable>
         open();
     }
 
-    private void saveClicked(Operation operation) {
+    protected void saveClicked(Operation operation) {
         boolean isValid = binder.writeBeanIfValid(currentItem);
 
         if (isValid) {
