@@ -13,8 +13,8 @@ values (20180002, 20180001, null, 'db_test seller #2', null, null);
 insert into sellers (seller_id, user_id, order_col, name, description, seller_website_url)
 values (20180003, 20180001, null, 'db_test seller #3', null, null);
 
-insert into products (product_id, user_id, order_col, code, name, description, product_website_url)
-values (20180001, 20180001, null, 'db_code #1', 'Test 1', null, null);
+insert into products (product_id, user_id, order_col, name, type, description, product_website_url)
+values (20180001, 20180001, null, 'Test 1', 'db_type 1', null, null);
 insert into seller_prices (product_product_id, prices, seller_id)
 values (20180001, 10.22, 20180001);
 insert into seller_prices (product_product_id, prices, seller_id)
@@ -22,8 +22,8 @@ values (20180001, 43.10, 20180002);
 insert into seller_prices (product_product_id, prices, seller_id)
 values (20180001, 68, 20180003);
 
-insert into products (product_id, user_id, order_col, code, name, description, product_website_url)
-values (20180002, 20180001, null, 'db_code #2', 'Test 2', null, null);
+insert into products (product_id, user_id, order_col, name, type, description, product_website_url)
+values (20180002, 20180001, null, 'Test 2', 'db_type 2', null, null);
 insert into seller_prices (product_product_id, prices, seller_id)
 values (20180002, 105.28, 20180001);
 insert into seller_prices (product_product_id, prices, seller_id)

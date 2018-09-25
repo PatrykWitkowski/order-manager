@@ -110,7 +110,7 @@ public class OrderEditorDialog extends AbstractEditorDialog<Order> {
 
     @Override
     protected void confirmDelete() {
-        openConfirmationDialog("Delete review",
+        openConfirmationDialog("Delete order",
                 "Are you sure you want to delete the order: “" + getCurrentItem().getTitle() + "”?", "");
     }
 }

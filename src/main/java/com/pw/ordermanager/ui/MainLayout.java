@@ -4,6 +4,7 @@ import com.pw.ordermanager.backend.utils.security.SecurityUtils;
 import com.pw.ordermanager.ui.components.ClickableRouterLink;
 import com.pw.ordermanager.ui.views.LoginView;
 import com.pw.ordermanager.ui.views.orderslist.OrdersList;
+import com.pw.ordermanager.ui.views.productslist.ProductsList;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.html.Div;
@@ -36,12 +37,17 @@ public class MainLayout extends Div
         // Only show as active for the exact URL, but not for sub paths
         orders.setHighlightCondition(HighlightConditions.sameLocation());
 
+        RouterLink products = new RouterLink(null, ProductsList.class);
+        products.add(new Icon(VaadinIcon.STORAGE), new Text("Products"));
+        products.addClassName("main-layout__nav-item");
+        products.setHighlightCondition(HighlightConditions.sameLocation());
+
         ClickableRouterLink logout = new ClickableRouterLink(null, LoginView.class);
         logout.add(new Icon(VaadinIcon.POWER_OFF), new Text("Logout"));
         logout.addClassName("main-layout__nav-item");
         logout.addClickListener(e -> onLogout());
 
-        Div navigation = new Div(orders, logout);
+        Div navigation = new Div(orders, products, logout);
         navigation.addClassName("main-layout__nav");
 
         Div header = new Div(title, navigation);

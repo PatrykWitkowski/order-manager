@@ -28,12 +28,12 @@ public class Product implements Serializable {
     private OrderedProduct order;
 
     @NotBlank
-    @Column(unique = true)
-    private String code;
-
-    @NotBlank
     @Column(length = 12)
     private String name;
+
+    @NotBlank
+    @Column(length = 20)
+    private String type;
 
     private String description;
 
