@@ -9,6 +9,8 @@ import java.util.Map;
 
 public abstract class AbstractSearchDialog<T extends Serializable> extends Dialog {
 
+    private T currentItem;
+
     @Getter(AccessLevel.PROTECTED)
     private Map<String, String> initValues;
 
@@ -16,5 +18,13 @@ public abstract class AbstractSearchDialog<T extends Serializable> extends Dialo
         this.initValues = values;
     }
 
+    /**
+     * Gets the item currently being edited.
+     *
+     * @return the item currently being edited
+     */
+    protected final T getCurrentItem() {
+        return currentItem;
+    }
 
 }

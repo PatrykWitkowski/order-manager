@@ -12,9 +12,10 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.router.*;
-import com.vaadin.flow.server.*;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import com.vaadin.flow.server.InitialPageSettings;
+import com.vaadin.flow.server.PageConfigurator;
+import com.vaadin.flow.server.SessionDestroyEvent;
+import com.vaadin.flow.server.VaadinService;
 
 /**
  * The main layout contains the header with the navigation buttons, and the
