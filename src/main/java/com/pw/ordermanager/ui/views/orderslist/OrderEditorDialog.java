@@ -80,6 +80,8 @@ public class OrderEditorDialog extends AbstractEditorDialog<Order> {
         getFormLayout().add(orderStatusComboBox);
 
         getBinder().forField(orderStatusComboBox)
+                .withValidator(Objects::nonNull,
+                        "Order status must be filled.")
                 .bind(Order::getStatus, Order::setStatus);
     }
 
