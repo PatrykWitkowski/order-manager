@@ -33,9 +33,9 @@ public class Seller implements Serializable {
     @NotBlank
     private String name;
 
-    //convert to address class
     @NotNull
-    private String address;
+    @Embedded
+    private Address address;
 
     private String description;
 
