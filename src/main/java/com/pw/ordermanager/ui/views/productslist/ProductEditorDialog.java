@@ -3,6 +3,7 @@ package com.pw.ordermanager.ui.views.productslist;
 import com.pw.ordermanager.backend.entity.Product;
 import com.pw.ordermanager.ui.common.AbstractEditorDialog;
 import com.pw.ordermanager.ui.components.SellerManager;
+import com.pw.ordermanager.ui.validators.WebsiteValidator;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.tabs.Tab;
@@ -60,8 +61,8 @@ public class ProductEditorDialog extends AbstractEditorDialog<Product> {
         productWebsiteUrl.setLabel("Website");
         getFormLayout().add(productWebsiteUrl);
 
-        // add validation for url address
         getBinder().forField(productWebsiteUrl)
+                .withValidator(new WebsiteValidator("The website's url is incorrect."))
                 .bind(Product::getProductWebsiteUrl, Product::setProductWebsiteUrl);
     }
 
