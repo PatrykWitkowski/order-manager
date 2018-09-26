@@ -112,7 +112,7 @@ public class SellerManager extends Component implements HasComponents {
                 }
             }
             return null;
-            }).setHeader("Name");
+            }).setHeader("NIP");
         selectedSellers.addColumn(seller -> {
             if(!getCurrentProduct().getPrices().isEmpty()) {
                 final Optional<Seller> optionalSeller = getCurrentProduct().getPrices().keySet().stream().filter(item -> Objects.equals(item, seller))
@@ -122,7 +122,7 @@ public class SellerManager extends Component implements HasComponents {
                 }
             }
             return null;
-        }).setHeader("Address");
+        }).setHeader("Name");
         selectedSellers.addColumn(seller -> {
             if(!getCurrentProduct().getPrices().isEmpty()) {
                 final Optional<Seller> optionalSeller = getCurrentProduct().getPrices().keySet().stream().filter(item -> Objects.equals(item, seller))
@@ -132,11 +132,14 @@ public class SellerManager extends Component implements HasComponents {
                 }
             }
             return null;
-        }).setHeader("NIP");
+        }).setHeader("Address");
         selectedSellers.addComponentColumn(seller -> {
             TextField priceField = new TextField();
+            priceField.setWidth("8em");
             if(!getCurrentProduct().getPrices().isEmpty()){
-                priceField.setValue(OrderedProductSupport.priceFormat(getCurrentProduct().getPrices().get(seller)));
+                if(getCurrentProduct().getPrices().get(seller) != null){
+                    priceField.setValue(OrderedProductSupport.priceFormat(getCurrentProduct().getPrices().get(seller)));
+                }
             }
             priceField.setPattern(MONEY_PATTERN);
             priceField.addValueChangeListener(e -> {

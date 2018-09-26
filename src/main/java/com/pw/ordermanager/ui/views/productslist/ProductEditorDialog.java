@@ -1,6 +1,7 @@
 package com.pw.ordermanager.ui.views.productslist;
 
 import com.pw.ordermanager.backend.entity.Product;
+import com.pw.ordermanager.backend.entity.Seller;
 import com.pw.ordermanager.ui.common.AbstractEditorDialog;
 import com.pw.ordermanager.ui.components.SellerManager;
 import com.pw.ordermanager.ui.validators.WebsiteValidator;
@@ -16,6 +17,8 @@ import com.vaadin.flow.data.binder.ValidationResult;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -28,6 +31,7 @@ public class ProductEditorDialog extends AbstractEditorDialog<Product> {
     private volatile boolean productManagerAlreadyAdded = false;
     private Tab sellerTab;
     private SellerManager sellerManager;
+    private HashMap<Seller, Double> pricesInProductBeforeChanges;
 
     /**
      * Constructs a new instance.
@@ -47,6 +51,7 @@ public class ProductEditorDialog extends AbstractEditorDialog<Product> {
 
     @Override
     public final void open(Product item, Operation operation) {
+        this.pricesInProductBeforeChanges = new HashMap<>(item.getPrices());
         createSellerManager(item);
         super.open(item, operation);
     }
@@ -145,5 +150,16 @@ public class ProductEditorDialog extends AbstractEditorDialog<Product> {
         } else {
             super.saveClicked(operation);
         }
+    }
+
+    @Override
+    public void cancelClicked() {
+        final boolean equals = Arrays.equals(sellerManager.getCurrentProduct().getPrices().keySet().toArray(),
+                pricesInProductBeforeChanges.keySet().toArray());
+        if(!equals){
+            getCurrentItem().setPrices(pricesInProductBeforeChanges);
+        }
+
+        super.cancelClicked();
     }
 }
