@@ -10,7 +10,7 @@ CREATE TABLE sellers (
   seller_id bigint NOT NULL AUTO_INCREMENT,
   user_id bigint NOT NULL,
   order_col bigint,
-  nip varchar(255) NOT NULL UNIQUE,
+  nip varchar(13) NOT NULL UNIQUE,
   name varchar(255) NOT NULL,
   street varchar(50) NOT NULL,
   local_number varchar(10) NOT NULL,

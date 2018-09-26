@@ -29,7 +29,7 @@ public class Seller implements Serializable {
     private OrderedProduct order;
 
     @NotBlank
-    @Column(unique = true)
+    @Column(unique = true, length = 13)
     private String nip;
 
     @NotBlank
