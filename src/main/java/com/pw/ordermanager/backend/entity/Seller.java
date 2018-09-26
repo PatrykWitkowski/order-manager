@@ -2,6 +2,7 @@ package com.pw.ordermanager.backend.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -12,6 +13,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "sellers")
 @EqualsAndHashCode(exclude={"owner", "order"})
+@NoArgsConstructor
 public class Seller implements Serializable {
 
     @Id
@@ -40,6 +42,10 @@ public class Seller implements Serializable {
     private String description;
 
     private String sellerWebsiteUrl;
+
+    public Seller(User user) {
+        this.owner = user;
+    }
 
     @Override
     public String toString(){
