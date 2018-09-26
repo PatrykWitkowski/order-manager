@@ -2,6 +2,8 @@ package com.pw.ordermanager.backend.utils.security;
 
 import com.pw.ordermanager.backend.dts.UserDts;
 import com.pw.ordermanager.backend.entity.User;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.server.VaadinSession;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,6 +11,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 @RunWith(SpringRunner.class)
@@ -62,5 +68,45 @@ public class SecurityUtilsTest {
         final boolean result = SecurityUtils.isAccessGranted(TOKEN);
 
         assertThat(result, is(true));
+    }
+
+    @Test
+    public void shouldReturnNullWhenUserNotLoggedIn(){
+        mockUI("invalid-token");
+
+        final UserDts result = SecurityUtils.getCurrentUser();
+
+        assertThat(result, is(nullValue()));
+    }
+
+    @Test
+    public void shouldReturnUserWhenUserLoggedIn(){
+        mockUI(TOKEN);
+
+        final UserDts result = SecurityUtils.getCurrentUser();
+
+        assertThat(result.isAuthorized(), is(true));
+        assertThat(result.getUser(), is(notNullValue()));
+        assertThat(result.getUser().getUsername(), is(ADMIN_USERNAME));
+    }
+
+    @Test
+    public void shouldRefreshUser(){
+        final User user = User.builder().username(USER_NAME).build();
+        mockUI(TOKEN);
+
+        SecurityUtils.updateCurrentUser(user);
+
+        final UserDts result = SecurityUtils.getCurrentUser();
+        assertThat(result, is(notNullValue()));
+        assertThat(result.getUser().getUsername(), is(USER_NAME));
+    }
+
+    private void mockUI(String csrfToken) {
+        UI ui = mock(UI.class);
+        VaadinSession session = mock(VaadinSession.class);
+        when(ui.getSession()).thenReturn(session);
+        when(session.getCsrfToken()).thenReturn(csrfToken);
+        UI.setCurrent(ui);
     }
 }

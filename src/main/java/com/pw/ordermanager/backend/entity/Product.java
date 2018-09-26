@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 @Data
@@ -28,12 +29,12 @@ public class Product implements Serializable {
     private OrderedProduct order;
 
     @NotBlank
-    @Column(unique = true)
-    private String code;
-
-    @NotBlank
     @Column(length = 12)
     private String name;
+
+    @NotBlank
+    @Column(length = 20)
+    private String type;
 
     private String description;
 
@@ -44,6 +45,15 @@ public class Product implements Serializable {
     private Map<Seller, Double> prices;
 
     private String productWebsiteUrl;
+
+    public Product(){
+        prices = new HashMap<>();
+    }
+
+    public Product(User user) {
+        this();
+        this.owner = user;
+    }
 
     @Override
     public String toString(){

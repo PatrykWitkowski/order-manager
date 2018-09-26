@@ -165,7 +165,7 @@ public abstract class AbstractEditorDialog<T extends Serializable>
     private void initButtonBar() {
         saveButton.setAutofocus(true);
         saveButton.getElement().setAttribute("theme", "primary");
-        cancelButton.addClickListener(e -> close());
+        cancelButton.addClickListener(e -> cancelClicked());
         deleteButton.addClickListener(e -> deleteClicked());
         deleteButton.getElement().setAttribute("theme", "error");
         buttonBar.setClassName("buttons");
@@ -255,7 +255,7 @@ public abstract class AbstractEditorDialog<T extends Serializable>
         open();
     }
 
-    private void saveClicked(Operation operation) {
+    protected void saveClicked(Operation operation) {
         boolean isValid = binder.writeBeanIfValid(currentItem);
 
         if (isValid) {
@@ -264,6 +264,10 @@ public abstract class AbstractEditorDialog<T extends Serializable>
         } else {
             binder.validate();
         }
+    }
+
+    protected void cancelClicked(){
+        close();
     }
 
     private void deleteClicked() {

@@ -69,7 +69,6 @@ public class ProductManager extends Component implements HasComponents {
     }
 
     private void createColumns() {
-        selectedProducts.addColumn(o -> o.getProduct().getCode()).setHeader("Code");
         selectedProducts.addColumn(o -> o.getProduct().getName()).setHeader("Product");
         selectedProducts.addColumn(o -> o.getSeller().getName()).setHeader("Seller");
         selectedProducts.addComponentColumn(o -> new NumberField(o, selectedProducts)).setHeader("Amount");
