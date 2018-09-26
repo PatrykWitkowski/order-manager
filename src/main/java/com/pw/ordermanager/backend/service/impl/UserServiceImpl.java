@@ -29,4 +29,13 @@ public class UserServiceImpl implements UserService {
         return userDts;
     }
 
+    @Override
+    public void refreshUserData(){
+        final UserDts currentUser = SecurityUtils.getCurrentUser();
+
+        final User refreshedUser = userRepository.findByUsername(currentUser.getUser().getUsername());
+
+        SecurityUtils.updateCurrentUser(refreshedUser);
+    }
+
 }

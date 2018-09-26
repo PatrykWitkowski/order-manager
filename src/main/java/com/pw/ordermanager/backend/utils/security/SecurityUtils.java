@@ -1,6 +1,7 @@
 package com.pw.ordermanager.backend.utils.security;
 
 import com.pw.ordermanager.backend.dts.UserDts;
+import com.pw.ordermanager.backend.entity.User;
 import com.vaadin.flow.component.UI;
 
 import java.util.HashMap;
@@ -47,5 +48,11 @@ public class SecurityUtils {
     public static UserDts getCurrentUser(){
         String token = UI.getCurrent().getSession().getCsrfToken();
         return Optional.ofNullable(authenticatedUsers.get(token)).orElse(null);
+    }
+
+    public static void updateCurrentUser(User refreshedUser){
+        String token = UI.getCurrent().getSession().getCsrfToken();
+        Optional.ofNullable(authenticatedUsers.get(token))
+                .ifPresent(currentUser -> currentUser.setUser(refreshedUser));
     }
 }

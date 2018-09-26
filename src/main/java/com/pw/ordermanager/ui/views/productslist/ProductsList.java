@@ -3,6 +3,7 @@ package com.pw.ordermanager.ui.views.productslist;
 import com.pw.ordermanager.backend.entity.Product;
 import com.pw.ordermanager.backend.entity.Seller;
 import com.pw.ordermanager.backend.service.ProductService;
+import com.pw.ordermanager.backend.service.UserService;
 import com.pw.ordermanager.backend.utils.security.SecurityUtils;
 import com.pw.ordermanager.ui.MainLayout;
 import com.pw.ordermanager.ui.common.AbstractEditorDialog;
@@ -41,6 +42,9 @@ public class ProductsList extends VerticalLayout implements BeforeEnterObserver 
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private UserService userService;
 
     public ProductsList(){
         initView();
@@ -131,6 +135,7 @@ public class ProductsList extends VerticalLayout implements BeforeEnterObserver 
     private void saveProduct(Product product,
                               AbstractEditorDialog.Operation operation){
         productService.saveProduct(product);
+        userService.refreshUserData();
 
         Notification.show(
                 "Product successfully " + operation.getNameInText() + "ed.", 3000, Notification.Position.BOTTOM_START);
