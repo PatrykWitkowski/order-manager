@@ -4,12 +4,17 @@ import com.pw.ordermanager.backend.entity.Product;
 import com.pw.ordermanager.ui.common.AbstractEditorDialog;
 import com.pw.ordermanager.ui.components.SellerManager;
 import com.pw.ordermanager.ui.validators.WebsiteValidator;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.ValidationResult;
 import com.vaadin.flow.data.validator.StringLengthValidator;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -58,11 +63,40 @@ public class ProductEditorDialog extends AbstractEditorDialog<Product> {
     }
 
     private void createWebsite() {
+        Button goToWebsiteButton = new Button(new Icon(VaadinIcon.BROWSER));
+        goToWebsiteButton.addClickListener(e -> {
+            String urlToOpen = "window.open($0,'_blank')";
+            if(StringUtils.isNotBlank(productWebsiteUrl.getValue())){
+                if(StringUtils.startsWith(productWebsiteUrl.getValue(), "www.")){
+                    urlToOpen = "window.open('http://' + $0,'_blank')";
+                }
+            }
+
+                getUI().get().getPage()
+                    .executeJavaScript(urlToOpen, productWebsiteUrl.getValue());
+        });
+
         productWebsiteUrl.setLabel("Website");
+        productWebsiteUrl.setSuffixComponent(goToWebsiteButton);
         getFormLayout().add(productWebsiteUrl);
 
+        goToWebsiteButton.setEnabled(false);
+        final WebsiteValidator websiteValidator = new WebsiteValidator("The website's url is incorrect.");
+        productWebsiteUrl.addValueChangeListener(e -> {
+           if(StringUtils.isNotBlank(e.getValue())){
+               final ValidationResult validationResult = websiteValidator.apply(e.getValue(), null);
+               if(validationResult.isError()){
+                   goToWebsiteButton.setEnabled(false);
+               } else {
+                   goToWebsiteButton.setEnabled(true);
+               }
+           } else {
+               goToWebsiteButton.setEnabled(false);
+           }
+        });
+
         getBinder().forField(productWebsiteUrl)
-                .withValidator(new WebsiteValidator("The website's url is incorrect."))
+                .withValidator(websiteValidator)
                 .bind(Product::getProductWebsiteUrl, Product::setProductWebsiteUrl);
     }
 
