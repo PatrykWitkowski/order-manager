@@ -68,19 +68,7 @@ public class ProductEditorDialog extends AbstractEditorDialog<Product> {
     }
 
     private void createWebsite() {
-        Button goToWebsiteButton = new Button(new Icon(VaadinIcon.BROWSER));
-        goToWebsiteButton.addClickListener(e -> {
-            String urlToOpen = "window.open($0,'_blank')";
-            if(StringUtils.isNotBlank(productWebsiteUrl.getValue())){
-                if(StringUtils.startsWith(productWebsiteUrl.getValue(), "www.")){
-                    urlToOpen = "window.open('http://' + $0,'_blank')";
-                }
-            }
-
-                getUI().get().getPage()
-                    .executeJavaScript(urlToOpen, productWebsiteUrl.getValue());
-        });
-
+        Button goToWebsiteButton = createGoToWebsiteButton();
         productWebsiteUrl.setLabel("Website");
         productWebsiteUrl.setSuffixComponent(goToWebsiteButton);
         getFormLayout().add(productWebsiteUrl);
@@ -103,6 +91,21 @@ public class ProductEditorDialog extends AbstractEditorDialog<Product> {
         getBinder().forField(productWebsiteUrl)
                 .withValidator(websiteValidator)
                 .bind(Product::getProductWebsiteUrl, Product::setProductWebsiteUrl);
+    }
+
+    private Button createGoToWebsiteButton() {
+        Button goToWebsiteButton = new Button(new Icon(VaadinIcon.BROWSER));
+        goToWebsiteButton.addClickListener(e -> {
+            String urlToOpen = "window.open($0,'_blank')";
+            if(StringUtils.isNotBlank(productWebsiteUrl.getValue())
+                    && StringUtils.startsWith(productWebsiteUrl.getValue(), "www.")){
+                    urlToOpen = "window.open('http://' + $0,'_blank')";
+            }
+
+                getUI().get().getPage()
+                    .executeJavaScript(urlToOpen, productWebsiteUrl.getValue());
+        });
+        return goToWebsiteButton;
     }
 
     private void createDescription() {

@@ -103,43 +103,18 @@ public class SellerManager extends Component implements HasComponents {
     }
 
     private void createColumns() {
-        selectedSellers.addColumn(seller -> {
-            if(!getCurrentProduct().getPrices().isEmpty()) {
-                final Optional<Seller> optionalSeller = getCurrentProduct().getPrices().keySet().stream().filter(item -> Objects.equals(item, seller))
-                        .findFirst();
-                if(optionalSeller.isPresent()){
-                    return seller.getNip();
-                }
-            }
-            return null;
-            }).setHeader("NIP");
-        selectedSellers.addColumn(seller -> {
-            if(!getCurrentProduct().getPrices().isEmpty()) {
-                final Optional<Seller> optionalSeller = getCurrentProduct().getPrices().keySet().stream().filter(item -> Objects.equals(item, seller))
-                        .findFirst();
-                if(optionalSeller.isPresent()){
-                    return seller.getName();
-                }
-            }
-            return null;
-        }).setHeader("Name");
-        selectedSellers.addColumn(seller -> {
-            if(!getCurrentProduct().getPrices().isEmpty()) {
-                final Optional<Seller> optionalSeller = getCurrentProduct().getPrices().keySet().stream().filter(item -> Objects.equals(item, seller))
-                        .findFirst();
-                if(optionalSeller.isPresent()){
-                    return seller.getAddress();
-                }
-            }
-            return null;
-        }).setHeader("Address");
+        addNipColumn();
+        addNameColumn();
+        addAddressColumn();
+        addPriceColumn();
+    }
+
+    private void addPriceColumn() {
         selectedSellers.addComponentColumn(seller -> {
             TextField priceField = new TextField();
             priceField.setWidth("8em");
-            if(!getCurrentProduct().getPrices().isEmpty()){
-                if(getCurrentProduct().getPrices().get(seller) != null){
+            if(!getCurrentProduct().getPrices().isEmpty() && getCurrentProduct().getPrices().get(seller) != null){
                     priceField.setValue(OrderedProductSupport.priceFormat(getCurrentProduct().getPrices().get(seller)));
-                }
             }
             priceField.setPattern(MONEY_PATTERN);
             priceField.addValueChangeListener(e -> {
@@ -156,6 +131,45 @@ public class SellerManager extends Component implements HasComponents {
 
             return priceField;
         }).setHeader("Price");
+    }
+
+    private void addAddressColumn() {
+        selectedSellers.addColumn(seller -> {
+            if(!getCurrentProduct().getPrices().isEmpty()) {
+                final Optional<Seller> optionalSeller = getCurrentProduct().getPrices().keySet().stream().filter(item -> Objects.equals(item, seller))
+                        .findFirst();
+                if(optionalSeller.isPresent()){
+                    return seller.getAddress();
+                }
+            }
+            return null;
+        }).setHeader("Address");
+    }
+
+    private void addNameColumn() {
+        selectedSellers.addColumn(seller -> {
+            if(!getCurrentProduct().getPrices().isEmpty()) {
+                final Optional<Seller> optionalSeller = getCurrentProduct().getPrices().keySet().stream().filter(item -> Objects.equals(item, seller))
+                        .findFirst();
+                if(optionalSeller.isPresent()){
+                    return seller.getName();
+                }
+            }
+            return null;
+        }).setHeader("Name");
+    }
+
+    private void addNipColumn() {
+        selectedSellers.addColumn(seller -> {
+            if(!getCurrentProduct().getPrices().isEmpty()) {
+                final Optional<Seller> optionalSeller = getCurrentProduct().getPrices().keySet().stream().filter(item -> Objects.equals(item, seller))
+                        .findFirst();
+                if(optionalSeller.isPresent()){
+                    return seller.getNip();
+                }
+            }
+            return null;
+            }).setHeader("NIP");
     }
 
     private void createGrid() {

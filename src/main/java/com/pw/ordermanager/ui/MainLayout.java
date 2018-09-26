@@ -27,24 +27,26 @@ import com.vaadin.flow.server.VaadinService;
 public class MainLayout extends Div
         implements RouterLayout, PageConfigurator, BeforeEnterObserver {
 
+    public static final String MAIN_LAYOUT_NAV_ITEM = "main-layout__nav-item";
+
     public MainLayout() {
         H2 title = new H2("Order Manager");
         title.addClassName("main-layout__title");
 
         RouterLink orders = new RouterLink(null, OrdersList.class);
         orders.add(new Icon(VaadinIcon.LIST), new Text("Orders"));
-        orders.addClassName("main-layout__nav-item");
+        orders.addClassName(MAIN_LAYOUT_NAV_ITEM);
         // Only show as active for the exact URL, but not for sub paths
         orders.setHighlightCondition(HighlightConditions.sameLocation());
 
         RouterLink products = new RouterLink(null, ProductsList.class);
         products.add(new Icon(VaadinIcon.STORAGE), new Text("Products"));
-        products.addClassName("main-layout__nav-item");
+        products.addClassName(MAIN_LAYOUT_NAV_ITEM);
         products.setHighlightCondition(HighlightConditions.sameLocation());
 
         ClickableRouterLink logout = new ClickableRouterLink(null, LoginView.class);
         logout.add(new Icon(VaadinIcon.POWER_OFF), new Text("Logout"));
-        logout.addClassName("main-layout__nav-item");
+        logout.addClassName(MAIN_LAYOUT_NAV_ITEM);
         logout.addClickListener(e -> onLogout());
 
         Div navigation = new Div(orders, products, logout);
