@@ -41,8 +41,6 @@ public class Seller implements Serializable {
 
     private String description;
 
-    private String sellerWebsiteUrl;
-
     public Seller(User user) {
         this.owner = user;
     }

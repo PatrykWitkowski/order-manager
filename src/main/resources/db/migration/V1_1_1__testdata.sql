@@ -6,12 +6,12 @@ VALUES(20180001, 'db_test_user', 'db_test_password', 'SIMPLE');
 INSERT INTO orders(order_id, user_id, title, status, order_date, total_price)
 VALUES(20180001, 20180001, 'test_order', 'ORDERED', NOW(), 0.0);
 
-insert into sellers (seller_id, user_id, order_col, nip, name, street, local_number, postal_code, location, description, seller_website_url)
-values (20180001, 20180001, null,'432-981-77-19', 'db_test seller #1', 'ulica', '22a', '55-200', 'Wroclaw', null, null);
-insert into sellers (seller_id, user_id, order_col, nip, name, street, local_number, postal_code, location, description, seller_website_url)
-values (20180002, 20180001, null,'123-456-88-18', 'db_test seller #2', 'ulica', '12', '40-250', 'Warszawa', null, null);
-insert into sellers (seller_id, user_id, order_col, nip, name, street, local_number, postal_code, location, description, seller_website_url)
-values (20180003, 20180001, null,'453-234-32-22', 'db_test seller #3', 'ulica', '2c', '10-312', 'Krakow', null, null);
+insert into sellers (seller_id, user_id, order_col, nip, name, street, local_number, postal_code, location, description)
+values (20180001, 20180001, null,'432-981-77-19', 'db_test seller #1', 'ulica', '22a', '55-200', 'Wroclaw', null);
+insert into sellers (seller_id, user_id, order_col, nip, name, street, local_number, postal_code, location, description)
+values (20180002, 20180001, null,'123-456-88-18', 'db_test seller #2', 'ulica', '12', '40-250', 'Warszawa', null);
+insert into sellers (seller_id, user_id, order_col, nip, name, street, local_number, postal_code, location, description)
+values (20180003, 20180001, null,'453-234-32-22', 'db_test seller #3', 'ulica', '2c', '10-312', 'Krakow', null);
 
 insert into products (product_id, user_id, order_col, name, type, description, product_website_url)
 values (20180001, 20180001, null, 'Test 1', 'db_type 1', null, null);

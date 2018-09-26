@@ -17,7 +17,6 @@ CREATE TABLE sellers (
   postal_code varchar(6) NOT NULL,
   location varchar(20) NOT NULL,
   description varchar(255),
-  seller_website_url varchar(255),
   PRIMARY KEY (seller_id),
   CONSTRAINT userhasmanysellers FOREIGN KEY(user_id) REFERENCES users(user_id)
 );
