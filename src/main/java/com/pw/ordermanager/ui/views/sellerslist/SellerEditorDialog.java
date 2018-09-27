@@ -4,7 +4,6 @@ import com.pw.ordermanager.backend.entity.Address;
 import com.pw.ordermanager.backend.entity.Seller;
 import com.pw.ordermanager.ui.common.AbstractEditorDialog;
 import com.pw.ordermanager.ui.validators.NIPValidator;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
