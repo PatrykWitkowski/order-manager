@@ -13,7 +13,6 @@ import java.io.Serializable;
 @Entity
 @Table(name = "sellers")
 @EqualsAndHashCode(exclude={"owner", "order"})
-@NoArgsConstructor
 public class Seller implements Serializable {
 
     @Id
@@ -41,7 +40,12 @@ public class Seller implements Serializable {
 
     private String description;
 
+    public Seller (){
+        this.address = new Address();
+    }
+
     public Seller(User user) {
+        this();
         this.owner = user;
     }
 

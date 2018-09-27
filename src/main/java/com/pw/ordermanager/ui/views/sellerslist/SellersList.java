@@ -21,6 +21,7 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -83,12 +84,15 @@ public class SellersList extends VerticalLayout implements BeforeEnterObserver {
         grid.addColumn(Seller::getName).setHeader("Name");
         grid.addColumn(TemplateRenderer.<Seller> of(
                 "<div title='[[item.location]]'>[[item.street]] [[item.local]]" +
-                        "<br><small>[[item.postalCode]], [[item.location]]</small></div>")
+                        "<br><small>[[item.postalCode]] [[item.location]]</small></div>")
                 .withProperty("street", s -> s.getAddress().getStreet())
                 .withProperty("local", s -> s.getAddress().getLocalNumber())
-                .withProperty("postalCode", s -> s.getAddress().getPostalCode())
+                .withProperty("postalCode", s ->
+                        StringUtils.isBlank(s.getAddress().getPostalCode()) ? s.getAddress().getPostalCode()
+                                : s.getAddress().getPostalCode().concat(","))
                 .withProperty("location", s -> s.getAddress().getLocation()))
                 .setHeader("Address");
+
 
         grid.addColumn(new ComponentRenderer<>(this::createEditButton))
                 .setFlexGrow(0);
