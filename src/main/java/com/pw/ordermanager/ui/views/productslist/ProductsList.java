@@ -2,7 +2,6 @@ package com.pw.ordermanager.ui.views.productslist;
 
 import com.pw.ordermanager.backend.entity.Product;
 import com.pw.ordermanager.backend.entity.Seller;
-import com.pw.ordermanager.backend.service.OrderedProductService;
 import com.pw.ordermanager.backend.service.ProductService;
 import com.pw.ordermanager.backend.service.UserService;
 import com.pw.ordermanager.backend.utils.security.SecurityUtils;

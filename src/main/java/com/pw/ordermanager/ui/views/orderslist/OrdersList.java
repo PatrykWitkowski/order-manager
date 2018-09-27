@@ -122,12 +122,8 @@ public class OrdersList extends PolymerTemplate<OrdersList.OrdersModel> implemen
             orderedProduct.getProduct().getOrder().removeAll(deletedOrderedProducts);
             orderedProduct.getSeller().getOrder().removeAll(deletedOrderedProducts);
         });
-        deletedOrderedProducts.forEach(op -> {
-                    orderedProductService.delete(op);
-                });
-        order.getOrderedProduct().forEach(orderedProduct -> {
-            orderedProductService.save(orderedProduct);
-        });
+        deletedOrderedProducts.forEach(op -> orderedProductService.delete(op));
+        order.getOrderedProduct().forEach(orderedProduct -> orderedProductService.save(orderedProduct));
     }
 
     private void updateOrder(Order order) {

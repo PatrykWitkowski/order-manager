@@ -1,13 +1,11 @@
 package com.pw.ordermanager.ui.views.sellerslist;
 
 import com.pw.ordermanager.backend.entity.Seller;
-import com.pw.ordermanager.backend.service.OrderedProductService;
 import com.pw.ordermanager.backend.service.SellerService;
 import com.pw.ordermanager.backend.service.UserService;
 import com.pw.ordermanager.backend.utils.security.SecurityUtils;
 import com.pw.ordermanager.ui.MainLayout;
 import com.pw.ordermanager.ui.common.AbstractEditorDialog;
-import com.pw.ordermanager.ui.common.ConfirmationDialog;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
