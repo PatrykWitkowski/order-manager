@@ -15,6 +15,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.TemplateRenderer;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
@@ -134,16 +135,14 @@ public class SellerManager extends Component implements HasComponents {
     }
 
     private void addAddressColumn() {
-        selectedSellers.addColumn(seller -> {
-            if(!getCurrentProduct().getPrices().isEmpty()) {
-                final Optional<Seller> optionalSeller = getCurrentProduct().getPrices().keySet().stream().filter(item -> Objects.equals(item, seller))
-                        .findFirst();
-                if(optionalSeller.isPresent()){
-                    return seller.getAddress();
-                }
-            }
-            return null;
-        }).setHeader("Address");
+        selectedSellers.addColumn(TemplateRenderer.<Seller>of(
+                "<div title='[[item.location]]'>[[item.street]] [[item.local]]" +
+                        "<br><small>[[item.postalCode]], [[item.location]]</small></div>")
+                .withProperty("street", s -> s.getAddress().getStreet())
+                .withProperty("local", s -> s.getAddress().getLocalNumber())
+                .withProperty("postalCode", s -> s.getAddress().getPostalCode())
+                .withProperty("location", s -> s.getAddress().getLocation()))
+                .setHeader("Address");
     }
 
     private void addNameColumn() {
