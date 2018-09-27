@@ -22,25 +22,41 @@ public class SellerServiceImpl implements SellerService {
         List<Seller> sellers = sellerRepository.findByOwner(user);
 
         if(StringUtils.isNotBlank(value)){
-            List<Seller> filteredSellers = sellers.stream()
-                    .filter(s -> StringUtils.containsIgnoreCase(s.getNip(), value))
-                    .collect(Collectors.toList());
+            List<Seller> filteredSellers = filterByNip(value, sellers);
 
             if(filteredSellers.isEmpty()){
-                filteredSellers = sellers.stream()
-                        .filter(s -> StringUtils.containsIgnoreCase(s.getName(), value))
-                        .collect(Collectors.toList());
+                filteredSellers = filterByName(value, sellers);
 
                 if(filteredSellers.isEmpty()){
-                    filteredSellers = sellers.stream()
-                            .filter(s -> StringUtils.containsIgnoreCase(s.getAddress().getLocation(), value))
-                            .collect(Collectors.toList());
+                    filteredSellers = filterByLocation(value, sellers);
                 }
             }
             sellers = filteredSellers;
         }
 
         return sellers;
+    }
+
+    private List<Seller> filterByLocation(String value, List<Seller> sellers) {
+        List<Seller> filteredSellers;
+        filteredSellers = sellers.stream()
+                .filter(s -> StringUtils.containsIgnoreCase(s.getAddress().getLocation(), value))
+                .collect(Collectors.toList());
+        return filteredSellers;
+    }
+
+    private List<Seller> filterByName(String value, List<Seller> sellers) {
+        List<Seller> filteredSellers;
+        filteredSellers = sellers.stream()
+                .filter(s -> StringUtils.containsIgnoreCase(s.getName(), value))
+                .collect(Collectors.toList());
+        return filteredSellers;
+    }
+
+    private List<Seller> filterByNip(String value, List<Seller> sellers) {
+        return sellers.stream()
+                        .filter(s -> StringUtils.containsIgnoreCase(s.getNip(), value))
+                        .collect(Collectors.toList());
     }
 
     @Override

@@ -145,7 +145,7 @@ public class SellerEditorDialog extends AbstractEditorDialog<Seller> {
         getFormLayout().add(sellerName);
 
         getBinder().forField(sellerName)
-                .withValidator(new StringLengthValidator("Seller's name must contain 3 - 20 chracters",
+                .withValidator(new StringLengthValidator("Seller's name must contain 3 - 20 characters",
                         3, 20))
                 .bind(Seller::getName, Seller::setName);
     }
