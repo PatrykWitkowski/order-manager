@@ -144,6 +144,7 @@ public class ProductsList extends VerticalLayout implements BeforeEnterObserver 
 
     private void deleteProduct(Product product) {
         productService.deleteProduct(product);
+        userService.refreshUserData();
 
         Notification.show("Product successfully deleted.", 3000, Notification.Position.BOTTOM_START);
         updateView();

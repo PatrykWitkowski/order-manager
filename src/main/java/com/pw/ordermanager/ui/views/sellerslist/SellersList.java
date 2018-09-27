@@ -134,6 +134,7 @@ public class SellersList extends VerticalLayout implements BeforeEnterObserver {
 
     private void deleteSeller(Seller seller) {
         sellerService.deleteSeller(seller);
+        userService.refreshUserData();
 
         Notification.show("Seller successfully deleted.", 3000, Notification.Position.BOTTOM_START);
         updateView();
