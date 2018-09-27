@@ -270,7 +270,7 @@ public abstract class AbstractEditorDialog<T extends Serializable>
         close();
     }
 
-    private void deleteClicked() {
+    protected void deleteClicked() {
         if (confirmationDialog.getElement().getParent() == null) {
             getUI().ifPresent(ui -> ui.add(confirmationDialog));
         }

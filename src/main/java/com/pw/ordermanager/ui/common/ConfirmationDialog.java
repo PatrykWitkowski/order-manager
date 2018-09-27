@@ -32,7 +32,7 @@ import java.util.function.Consumer;
  * @param <T>
  *            The type of the action's subject
  */
-class ConfirmationDialog<T extends Serializable>
+public class ConfirmationDialog<T extends Serializable>
         extends Dialog {
 
     public static final String THEME = "theme";

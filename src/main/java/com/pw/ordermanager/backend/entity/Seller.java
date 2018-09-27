@@ -8,6 +8,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -24,8 +26,8 @@ public class Seller implements Serializable {
     @JoinColumn(name="user_id")
     private User owner;
 
-    @OneToOne(fetch=FetchType.EAGER, mappedBy="seller")
-    private OrderedProduct order;
+    @OneToMany(fetch=FetchType.EAGER, mappedBy="seller")
+    private List<OrderedProduct> order;
 
     @NotBlank
     @Column(unique = true, length = 13)
@@ -42,6 +44,7 @@ public class Seller implements Serializable {
 
     public Seller (){
         this.address = new Address();
+        this.order = new ArrayList<>();
     }
 
     public Seller(User user) {

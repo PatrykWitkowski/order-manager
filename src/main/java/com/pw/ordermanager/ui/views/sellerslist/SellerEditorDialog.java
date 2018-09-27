@@ -5,6 +5,7 @@ import com.pw.ordermanager.backend.entity.Seller;
 import com.pw.ordermanager.ui.common.AbstractEditorDialog;
 import com.pw.ordermanager.ui.validators.NIPValidator;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
@@ -165,5 +166,14 @@ public class SellerEditorDialog extends AbstractEditorDialog<Seller> {
         openConfirmationDialog("Delete seller",
                 "Are you sure you want to delete the seller: “" + getCurrentItem().getName() + "”?", "");
 
+    }
+
+    @Override
+    protected void deleteClicked() {
+        if(getCurrentItem().getOrder().isEmpty()){
+            super.deleteClicked();
+        } else {
+            Notification.show("Cannot delete the seller until existing orders with its.", 4000, Notification.Position.MIDDLE);
+        }
     }
 }

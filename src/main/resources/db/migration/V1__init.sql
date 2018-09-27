@@ -58,7 +58,7 @@ CREATE TABLE ordered_products(
     amount bigint NOT NULL,
     price double NOT NULL,
     PRIMARY KEY (ordered_product_id),
-    CONSTRAINT producthasorderedproduct FOREIGN KEY(product_id) REFERENCES products(product_id),
-    CONSTRAINT sellerhasorderedproduct FOREIGN KEY(seller_id) REFERENCES sellers(seller_id),
+    CONSTRAINT producthasmanyorderedproduct FOREIGN KEY(product_id) REFERENCES products(product_id),
+    CONSTRAINT sellerhasmanyorderedproduct FOREIGN KEY(seller_id) REFERENCES sellers(seller_id),
     CONSTRAINT orderhasmanyorderedproducts FOREIGN KEY(order_id) REFERENCES orders(order_id)
 );
