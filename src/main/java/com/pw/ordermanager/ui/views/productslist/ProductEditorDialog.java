@@ -165,4 +165,13 @@ public class ProductEditorDialog extends AbstractEditorDialog<Product> {
 
         super.cancelClicked();
     }
+
+    @Override
+    protected void deleteClicked() {
+        if(getCurrentItem().getOrder().isEmpty()){
+            super.deleteClicked();
+        } else {
+            Notification.show("Cannot delete the product until existing orders with its.", 4000, Notification.Position.MIDDLE);
+        }
+    }
 }

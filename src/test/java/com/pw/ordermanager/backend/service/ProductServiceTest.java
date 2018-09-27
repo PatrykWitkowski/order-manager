@@ -21,15 +21,15 @@ import static org.hamcrest.Matchers.*;
 @SpringBootTest
 public class ProductServiceTest {
 
-    public static final String USER_WITHOUT_PRODUCTS = "UserWithoutProducts";
-    public static final String DB_TEST_USER = "db_test_user";
-    public static final String PRODUCT_SERVICE_TEST_NAME = "test_name";
-    public static final String PRODUCT_SERVICE_TEST_TYPE = "test_type";
-    public static final String TEST_1 = "Test 1";
-    public static final String DB_TYPE_1 = "db_type 1";
-    public static final String TEST_2 = "Test 2";
-    public static final String DB_TYPE_2 = "db_type 2";
-    public static final String DB_TEST_SELLER_3 = "db_test seller #3";
+    private static final String USER_WITHOUT_PRODUCTS = "UserWithoutProducts";
+    private static final String DB_TEST_USER = "db_test_user";
+    private static final String PRODUCT_SERVICE_TEST_NAME = "test_name";
+    private static final String PRODUCT_SERVICE_TEST_TYPE = "test_type";
+    private static final String TEST_1 = "Test 1";
+    private static final String DB_TYPE_1 = "db_type 1";
+    private static final String TEST_2 = "Test 2";
+    private static final String DB_TYPE_2 = "db_type 2";
+    private static final String DB_TEST_SELLER_3 = "db_test seller #3";
 
     @Autowired
     private ProductService testedService;

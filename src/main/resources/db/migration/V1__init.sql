@@ -10,11 +10,13 @@ CREATE TABLE sellers (
   seller_id bigint NOT NULL AUTO_INCREMENT,
   user_id bigint NOT NULL,
   order_col bigint,
-  nip varchar(255) NOT NULL UNIQUE,
+  nip varchar(13) NOT NULL UNIQUE,
   name varchar(255) NOT NULL,
-  address varchar(255) NOT NULL,
+  street varchar(50),
+  local_number varchar(10),
+  postal_code varchar(6),
+  location varchar(20),
   description varchar(255),
-  seller_website_url varchar(255),
   PRIMARY KEY (seller_id),
   CONSTRAINT userhasmanysellers FOREIGN KEY(user_id) REFERENCES users(user_id)
 );
@@ -56,7 +58,7 @@ CREATE TABLE ordered_products(
     amount bigint NOT NULL,
     price double NOT NULL,
     PRIMARY KEY (ordered_product_id),
-    CONSTRAINT producthasorderedproduct FOREIGN KEY(product_id) REFERENCES products(product_id),
-    CONSTRAINT sellerhasorderedproduct FOREIGN KEY(seller_id) REFERENCES sellers(seller_id),
+    CONSTRAINT producthasmanyorderedproduct FOREIGN KEY(product_id) REFERENCES products(product_id),
+    CONSTRAINT sellerhasmanyorderedproduct FOREIGN KEY(seller_id) REFERENCES sellers(seller_id),
     CONSTRAINT orderhasmanyorderedproducts FOREIGN KEY(order_id) REFERENCES orders(order_id)
 );

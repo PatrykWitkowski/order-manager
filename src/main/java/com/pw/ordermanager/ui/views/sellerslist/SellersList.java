@@ -1,21 +1,17 @@
-package com.pw.ordermanager.ui.views.productslist;
+package com.pw.ordermanager.ui.views.sellerslist;
 
-import com.pw.ordermanager.backend.entity.Product;
 import com.pw.ordermanager.backend.entity.Seller;
-import com.pw.ordermanager.backend.service.ProductService;
+import com.pw.ordermanager.backend.service.SellerService;
 import com.pw.ordermanager.backend.service.UserService;
 import com.pw.ordermanager.backend.utils.security.SecurityUtils;
 import com.pw.ordermanager.ui.MainLayout;
 import com.pw.ordermanager.ui.common.AbstractEditorDialog;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
@@ -25,28 +21,29 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-@Route(value = "products", layout = MainLayout.class)
-@PageTitle("Products List")
-public class ProductsList extends VerticalLayout implements BeforeEnterObserver {
+@Route(value = "sellers", layout = MainLayout.class)
+@PageTitle("Sellers List")
+public class SellersList extends VerticalLayout implements BeforeEnterObserver {
 
-    private final TextField searchField = new TextField("", "Search products");
-    private final H2 header = new H2("Products");
-    private final Grid<Product> grid = new Grid<>();
+    private final TextField searchField = new TextField("", "Search sellers");
+    private final H2 header = new H2("Sellers");
+    private final Grid<Seller> grid = new Grid<>();
 
-    private final ProductEditorDialog form = new ProductEditorDialog(
-            this::saveProduct, this::deleteProduct);
+    private final SellerEditorDialog form = new SellerEditorDialog(
+            this::saveSeller, this::deleteSeller);
 
     @Autowired
-    private ProductService productService;
+    private SellerService sellerService;
 
     @Autowired
     private UserService userService;
 
-    public ProductsList(){
+    public SellersList(){
         initView();
 
         addSearchBar();
@@ -67,10 +64,10 @@ public class ProductsList extends VerticalLayout implements BeforeEnterObserver 
         searchField.addValueChangeListener(e -> updateView());
         searchField.setValueChangeMode(ValueChangeMode.EAGER);
 
-        Button newButton = new Button("New product", new Icon("lumo", "plus"));
+        Button newButton = new Button("New seller", new Icon("lumo", "plus"));
         newButton.getElement().setAttribute("theme", "primary");
         newButton.addClassName("view-toolbar__button");
-        newButton.addClickListener(e -> form.open(new Product(SecurityUtils.getCurrentUser().getUser()),
+        newButton.addClickListener(e -> form.open(new Seller(SecurityUtils.getCurrentUser().getUser()),
                 AbstractEditorDialog.Operation.ADD));
 
         viewToolbar.add(searchField, newButton);
@@ -83,26 +80,20 @@ public class ProductsList extends VerticalLayout implements BeforeEnterObserver 
         container.setAlignItems(Alignment.STRETCH);
 
         grid.setSizeFull();
-        grid.addColumn(TemplateRenderer.<Product> of(
-                "<div title='[[item.name]]'>[[item.name]]<br><small>[[item.type]]</small></div>")
-                .withProperty("name", Product::getName)
-                .withProperty("type", Product::getType))
-                .setHeader("Name").setResizable(true);
-        grid.addComponentColumn(p -> {
-            final ComboBox<Seller> sellerComboBox = new ComboBox<>(null, p.getPrices().keySet());
-            Label price = new Label();
+        grid.addColumn(Seller::getNip).setHeader("NIP");
+        grid.addColumn(Seller::getName).setHeader("Name");
+        grid.addColumn(TemplateRenderer.<Seller> of(
+                "<div title='[[item.location]]'>[[item.street]] [[item.local]]" +
+                        "<br><small>[[item.postalCode]] [[item.location]]</small></div>")
+                .withProperty("street", s -> s.getAddress().getStreet())
+                .withProperty("local", s -> s.getAddress().getLocalNumber())
+                .withProperty("postalCode", s ->
+                        StringUtils.isBlank(s.getAddress().getPostalCode()) ? s.getAddress().getPostalCode()
+                                : s.getAddress().getPostalCode().concat(","))
+                .withProperty("location", s -> s.getAddress().getLocation()))
+                .setHeader("Address");
 
-            sellerComboBox.addValueChangeListener(e -> {
-                if(e.getValue() != null){
-                    price.setText(" : " + p.getPrices().get(e.getValue()).toString() + " $");
-                } else {
-                    price.setText("Select a seller.");
-                }
-            });
-            final HorizontalLayout horizontalLayout = new HorizontalLayout(sellerComboBox, price);
-            horizontalLayout.setDefaultVerticalComponentAlignment(Alignment.CENTER);
-            return horizontalLayout;
-        }).setHeader("Sellers");
+
         grid.addColumn(new ComponentRenderer<>(this::createEditButton))
                 .setFlexGrow(0);
         grid.setSelectionMode(Grid.SelectionMode.NONE);
@@ -111,8 +102,8 @@ public class ProductsList extends VerticalLayout implements BeforeEnterObserver 
         add(container);
     }
 
-    private Button createEditButton(Product product) {
-        Button edit = new Button("Edit", event -> form.open(product,
+    private Button createEditButton(Seller seller) {
+        Button edit = new Button("Edit", event -> form.open(seller,
                 AbstractEditorDialog.Operation.EDIT));
         edit.setIcon(new Icon("lumo", "edit"));
         edit.addClassName("review__edit");
@@ -121,32 +112,31 @@ public class ProductsList extends VerticalLayout implements BeforeEnterObserver 
     }
 
     private void updateView() {
-        List<Product> products
-                = productService.findProducts(SecurityUtils.getCurrentUser().getUser(), searchField.getValue());
-        grid.setItems(products);
+        List<Seller> sellers = sellerService.findSellers(SecurityUtils.getCurrentUser().getUser(), searchField.getValue());
+        grid.setItems(sellers);
 
         if (searchField.getValue().length() > 0) {
             header.setText("Search for “"+ searchField.getValue() +"”");
         } else {
-            header.setText("Products");
+            header.setText("Sellers");
         }
     }
 
-    private void saveProduct(Product product,
-                              AbstractEditorDialog.Operation operation){
-        productService.saveProduct(product);
+    private void saveSeller(Seller seller,
+                             AbstractEditorDialog.Operation operation){
+        sellerService.saveSeller(seller);
         userService.refreshUserData();
 
         Notification.show(
-                "Product successfully " + operation.getNameInText() + "ed.", 3000, Notification.Position.BOTTOM_START);
+                "Seller successfully " + operation.getNameInText() + "ed.", 3000, Notification.Position.BOTTOM_START);
         updateView();
     }
 
-    private void deleteProduct(Product product) {
-        productService.deleteProduct(product);
+    private void deleteSeller(Seller seller) {
+        sellerService.deleteSeller(seller);
         userService.refreshUserData();
 
-        Notification.show("Product successfully deleted.", 3000, Notification.Position.BOTTOM_START);
+        Notification.show("Seller successfully deleted.", 3000, Notification.Position.BOTTOM_START);
         updateView();
     }
 

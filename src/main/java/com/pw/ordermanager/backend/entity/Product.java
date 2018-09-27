@@ -7,7 +7,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -25,8 +27,8 @@ public class Product implements Serializable {
     @JoinColumn(name="user_id")
     private User owner;
 
-    @OneToOne(fetch=FetchType.EAGER, mappedBy="product")
-    private OrderedProduct order;
+    @OneToMany(fetch=FetchType.EAGER, mappedBy="product")
+    private List<OrderedProduct> order;
 
     @NotBlank
     @Column(length = 12)
@@ -48,6 +50,7 @@ public class Product implements Serializable {
 
     public Product(){
         prices = new HashMap<>();
+        order = new ArrayList<>();
     }
 
     public Product(User user) {

@@ -4,6 +4,8 @@ import com.pw.ordermanager.backend.entity.Order;
 import com.pw.ordermanager.backend.entity.OrderedProduct;
 import com.pw.ordermanager.backend.service.OrderService;
 import com.pw.ordermanager.backend.service.OrderedProductService;
+import com.pw.ordermanager.backend.service.ProductService;
+import com.pw.ordermanager.backend.service.SellerService;
 import com.pw.ordermanager.backend.support.OrderedProductSupport;
 import com.pw.ordermanager.backend.utils.security.SecurityUtils;
 import com.pw.ordermanager.ui.MainLayout;
@@ -34,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Displays the list of available orders, with a search filter as well as
@@ -68,6 +71,12 @@ public class OrdersList extends PolymerTemplate<OrdersList.OrdersModel> implemen
 
     @Autowired
     private OrderedProductService orderedProductService;
+
+    @Autowired
+    private SellerService sellerService;
+
+    @Autowired
+    private ProductService productService;
 
     @Id("search")
     private TextField search;
@@ -106,9 +115,14 @@ public class OrdersList extends PolymerTemplate<OrdersList.OrdersModel> implemen
 
     private void updateOrderedProduct(Order order) {
         final List<OrderedProduct> orderedProductServiceByOrder = orderedProductService.findByOrder(order);
-        orderedProductServiceByOrder.stream()
+        final List<OrderedProduct> deletedOrderedProducts = orderedProductServiceByOrder.stream()
                 .filter(op -> !order.getOrderedProduct().contains(op))
-                .forEach(op -> orderedProductService.delete(op));
+                .collect(Collectors.toList());
+        order.getOrderedProduct().forEach(orderedProduct -> {
+            orderedProduct.getProduct().getOrder().removeAll(deletedOrderedProducts);
+            orderedProduct.getSeller().getOrder().removeAll(deletedOrderedProducts);
+        });
+        deletedOrderedProducts.forEach(op -> orderedProductService.delete(op));
         order.getOrderedProduct().forEach(orderedProduct -> orderedProductService.save(orderedProduct));
     }
 
@@ -132,7 +146,11 @@ public class OrdersList extends PolymerTemplate<OrdersList.OrdersModel> implemen
     }
 
     private void deleteOrderedProduct(Order order) {
-        order.getOrderedProduct().forEach(orderedProduct -> orderedProductService.delete(orderedProduct));
+        order.getOrderedProduct().forEach(orderedProduct -> {
+            orderedProduct.getSeller().getOrder().remove(orderedProduct);
+            orderedProduct.getProduct().getOrder().remove(orderedProduct);
+            orderedProductService.delete(orderedProduct);
+        });
     }
 
     private void updateList() {

@@ -5,6 +5,7 @@ import com.pw.ordermanager.ui.components.ClickableRouterLink;
 import com.pw.ordermanager.ui.views.LoginView;
 import com.pw.ordermanager.ui.views.orderslist.OrdersList;
 import com.pw.ordermanager.ui.views.productslist.ProductsList;
+import com.pw.ordermanager.ui.views.sellerslist.SellersList;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.html.Div;
@@ -44,12 +45,17 @@ public class MainLayout extends Div
         products.addClassName(MAIN_LAYOUT_NAV_ITEM);
         products.setHighlightCondition(HighlightConditions.sameLocation());
 
+        RouterLink sellers = new RouterLink(null, SellersList.class);
+        sellers.add(new Icon(VaadinIcon.SHOP), new Text("Sellers"));
+        sellers.addClassName(MAIN_LAYOUT_NAV_ITEM);
+        sellers.setHighlightCondition(HighlightConditions.sameLocation());
+
         ClickableRouterLink logout = new ClickableRouterLink(null, LoginView.class);
         logout.add(new Icon(VaadinIcon.POWER_OFF), new Text("Logout"));
         logout.addClassName(MAIN_LAYOUT_NAV_ITEM);
         logout.addClickListener(e -> onLogout());
 
-        Div navigation = new Div(orders, products, logout);
+        Div navigation = new Div(orders, products, sellers, logout);
         navigation.addClassName("main-layout__nav");
 
         Div header = new Div(title, navigation);

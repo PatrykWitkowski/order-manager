@@ -2,11 +2,14 @@ package com.pw.ordermanager.backend.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -23,23 +26,31 @@ public class Seller implements Serializable {
     @JoinColumn(name="user_id")
     private User owner;
 
-    @OneToOne(fetch=FetchType.EAGER, mappedBy="seller")
-    private OrderedProduct order;
+    @OneToMany(fetch=FetchType.EAGER, mappedBy="seller")
+    private List<OrderedProduct> order;
 
     @NotBlank
-    @Column(unique = true)
+    @Column(unique = true, length = 13)
     private String nip;
 
     @NotBlank
     private String name;
 
-    //convert to address class
     @NotNull
-    private String address;
+    @Embedded
+    private Address address;
 
     private String description;
 
-    private String sellerWebsiteUrl;
+    public Seller (){
+        this.address = new Address();
+        this.order = new ArrayList<>();
+    }
+
+    public Seller(User user) {
+        this();
+        this.owner = user;
+    }
 
     @Override
     public String toString(){

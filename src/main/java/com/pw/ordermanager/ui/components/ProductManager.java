@@ -97,8 +97,14 @@ public class ProductManager extends Component implements HasComponents {
 
     private OrderedProduct createNewOrderedProduct() {
         OrderedProduct newOrderedProduct= new OrderedProduct();
-        final Product productValue = productLookup.getProductSearchField().getValue();
-        final Seller sellerValue = productLookup.getSellerSearchField().getValue();
+        Product productValue = productLookup.getProductSearchField().getValue();
+        Seller sellerValue = productLookup.getSellerSearchField().getValue();
+        if(!productValue.getOrder().contains(newOrderedProduct)){
+            productValue.getOrder().add(newOrderedProduct);
+        }
+        if(!sellerValue.getOrder().contains(newOrderedProduct)){
+            sellerValue.getOrder().add(newOrderedProduct);
+        }
         newOrderedProduct.setProduct(productValue);
         newOrderedProduct.setSeller(sellerValue);
         newOrderedProduct.setAmount(1L);
