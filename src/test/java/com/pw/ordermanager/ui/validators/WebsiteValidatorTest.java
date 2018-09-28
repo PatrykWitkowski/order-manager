@@ -2,7 +2,6 @@ package com.pw.ordermanager.ui.validators;
 
 import com.vaadin.flow.data.binder.ValidationResult;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -49,8 +48,6 @@ public class WebsiteValidatorTest {
         assertWebsitesUrl(result, false);
     }
 
-    // Test ignored until bug #9 will be fixed
-    @Ignore
     @Test
     public void testUrlWithLocalPrefixBeforeWebsitesName(){
         final ValidationResult result = websiteValidator.apply("https://pl.wikipedia.org", null);
@@ -74,7 +71,7 @@ public class WebsiteValidatorTest {
 
     @Test
     public void testUrlEndsWithInvalidLocale(){
-        final ValidationResult result = websiteValidator.apply("https://www.google.a", null);
+        final ValidationResult result = websiteValidator.apply("https://www.google.", null);
 
         assertWebsitesUrl(result, true);
     }
