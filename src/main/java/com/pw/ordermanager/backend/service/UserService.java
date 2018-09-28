@@ -11,4 +11,6 @@ public interface UserService extends Serializable {
 
     void refreshUserData();
 
+    void changePassword(@NonNull String newPassword);
+
 }

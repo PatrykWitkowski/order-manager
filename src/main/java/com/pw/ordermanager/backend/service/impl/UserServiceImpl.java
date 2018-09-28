@@ -38,4 +38,11 @@ public class UserServiceImpl implements UserService {
         SecurityUtils.updateCurrentUser(refreshedUser);
     }
 
+    @Override
+    public void changePassword(String newPassword) {
+        final User currentUser = SecurityUtils.getCurrentUser().getUser();
+        currentUser.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
+        userRepository.save(currentUser);
+    }
+
 }
