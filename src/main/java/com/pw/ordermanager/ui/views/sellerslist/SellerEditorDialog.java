@@ -27,6 +27,7 @@ public class SellerEditorDialog extends AbstractEditorDialog<Seller> {
     private TextField addressNumber = new TextField();
     private TextField addressPostalCode = new TextField();
     private TextField addressLocation = new TextField();
+    private Address oldAddress = new Address();
 
     /**
      * Constructs a new instance.
@@ -69,6 +70,7 @@ public class SellerEditorDialog extends AbstractEditorDialog<Seller> {
                 .withConverter(new Converter<String, Address>() {
                     @Override
                     public Result<Address> convertToModel(String s, ValueContext valueContext) {
+                        oldAddress.setStreet(getCurrentItem().getAddress().getStreet());
                         Address address = getCurrentItem().getAddress();
                         address.setStreet(s);
                         return Result.ok(address);
@@ -85,6 +87,7 @@ public class SellerEditorDialog extends AbstractEditorDialog<Seller> {
                 .withConverter(new Converter<String, Address>() {
                     @Override
                     public Result<Address> convertToModel(String s, ValueContext valueContext) {
+                        oldAddress.setLocalNumber(getCurrentItem().getAddress().getLocalNumber());
                         Address address = getCurrentItem().getAddress();
                         address.setLocalNumber(s);
                         return Result.ok(address);
@@ -102,6 +105,7 @@ public class SellerEditorDialog extends AbstractEditorDialog<Seller> {
                 .withConverter(new Converter<String, Address>() {
                     @Override
                     public Result<Address> convertToModel(String s, ValueContext valueContext) {
+                        oldAddress.setPostalCode(getCurrentItem().getAddress().getPostalCode());
                         Address address = getCurrentItem().getAddress();
                         address.setPostalCode(s);
                         return Result.ok(address);
@@ -118,6 +122,7 @@ public class SellerEditorDialog extends AbstractEditorDialog<Seller> {
                 .withConverter(new Converter<String, Address>() {
                     @Override
                     public Result<Address> convertToModel(String s, ValueContext valueContext) {
+                        oldAddress.setLocation(getCurrentItem().getAddress().getLocation());
                         Address address = getCurrentItem().getAddress();
                         address.setLocation(s);
                         return Result.ok(address);
@@ -176,5 +181,14 @@ public class SellerEditorDialog extends AbstractEditorDialog<Seller> {
         } else {
             Notification.show("Cannot delete the seller until existing orders with its.", 4000, Notification.Position.MIDDLE);
         }
+    }
+
+    @Override
+    protected void cancelClicked() {
+        getCurrentItem().getAddress().setStreet(oldAddress.getStreet());
+        getCurrentItem().getAddress().setLocalNumber(oldAddress.getLocalNumber());
+        getCurrentItem().getAddress().setPostalCode(oldAddress.getPostalCode());
+        getCurrentItem().getAddress().setLocation(oldAddress.getLocation());
+        super.cancelClicked();
     }
 }
