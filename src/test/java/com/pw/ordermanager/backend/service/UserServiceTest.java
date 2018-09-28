@@ -92,6 +92,17 @@ public class UserServiceTest {
         assertThat(result.getUser().getProducts().stream().map(Product::getName).findFirst().get(), is(TEST_PRODUCT_NAME));
     }
 
+    @Test
+    public void shouldChangePassword(){
+        final String newPassword = "newPassword";
+        testedService.authenticate(ADMIN_USERNAME, CORRECT_PASSWORD, TOKEN);
+        mockUI(TOKEN);
+
+        testedService.changePassword(newPassword);
+
+        assertThat(BCrypt.checkpw(newPassword, admin.getPassword()), is(true));
+    }
+
     private void mockUI(String csrfToken) {
         UI ui = mock(UI.class);
         VaadinSession session = mock(VaadinSession.class);
