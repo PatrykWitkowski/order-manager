@@ -91,8 +91,8 @@ public class OrderEditorDialog extends AbstractEditorDialog<Order> {
 
         getBinder().forField(description)
                 .withValidator(new StringLengthValidator(
-                        "Description must contain at least 15 characters",
-                        15, null))
+                        "Description must contain at least 15 characters (255 max)",
+                        15, 255))
                 .bind(Order::getDescription, Order::setDescription);
     }
 

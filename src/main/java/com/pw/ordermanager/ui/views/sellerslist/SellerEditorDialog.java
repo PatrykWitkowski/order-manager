@@ -137,6 +137,7 @@ public class SellerEditorDialog extends AbstractEditorDialog<Seller> {
         getFormLayout().add(description);
 
         getBinder().forField(description)
+                .withValidator(new StringLengthValidator("Description too long", null, 255))
                 .bind(Seller::getDescription, Seller::setDescription);
     }
 

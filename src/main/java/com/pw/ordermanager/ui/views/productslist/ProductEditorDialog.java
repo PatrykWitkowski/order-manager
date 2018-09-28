@@ -113,6 +113,7 @@ public class ProductEditorDialog extends AbstractEditorDialog<Product> {
         getFormLayout().add(description);
 
         getBinder().forField(description)
+                .withValidator(new StringLengthValidator("Description too long", null, 255))
                 .bind(Product::getDescription, Product::setDescription);
     }
 
