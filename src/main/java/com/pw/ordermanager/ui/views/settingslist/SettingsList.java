@@ -47,13 +47,9 @@ public class SettingsList extends VerticalLayout {
         PasswordField confirmNewPassword = new PasswordField("Confirm New Password");
         confirmNewPassword.setRevealButtonVisible(false);
 
-        confirm.addClickListener(e -> {
-            checkActualPasswordIsCorrect(actualPassword, newPassword, confirmNewPassword);
-        });
+        confirm.addClickListener(e -> checkActualPasswordIsCorrect(actualPassword, newPassword, confirmNewPassword));
 
-        reset.addClickListener(e -> {
-            resetPasswordsFields(actualPassword, newPassword, confirmNewPassword);
-        });
+        reset.addClickListener(e -> resetPasswordsFields(actualPassword, newPassword, confirmNewPassword));
 
         changePassword.add(actualPassword, newPassword, confirmNewPassword, confirm, reset);
         changePassword.setDefaultVerticalComponentAlignment(Alignment.END);
